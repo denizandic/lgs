@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="tr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Deniz'in LGS Çalışma Asistanı</title>
+<style>
+:root{--bg:#f3f5fb;--card:#fff;--ink:#1d2333;--mu:#6b7285;--line:#dfe4f0;--pri:#3b4cca;--xp:#f5a524;--oks:#1d4ed8;--drs:#c026d3;--okh:#f97316;--drh:#15803d;--wk:#475569;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#12151f;--card:#1b2030;--ink:#e8ebf5;--mu:#9aa2b8;--line:#2b3247;--pri:#8b97ff}}
+:root[data-theme="dark"]{--bg:#12151f;--card:#1b2030;--ink:#e8ebf5;--mu:#9aa2b8;--line:#2b3247;--pri:#8b97ff}
+*{box-sizing:border-box}html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:16px/1.4 "Trebuchet MS",Verdana,sans-serif}
+header{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:14px 16px;background:var(--pri);color:#fff}
+header h1{font-size:1.15rem;margin:0}
+#xp{background:var(--xp);color:#3a2600;font-weight:800;padding:6px 12px;border-radius:20px;white-space:nowrap}
+nav{display:flex;gap:6px;overflow-x:auto;padding:10px 12px;background:var(--card);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+nav button{flex:none;border:1px solid var(--line);background:none;color:var(--ink);padding:8px 14px;border-radius:20px;font:inherit;cursor:pointer}
+nav button.on{background:var(--pri);color:#fff;border-color:var(--pri)}
+main{max-width:1000px;margin:0 auto;padding:14px}
+h2{margin:4px 0 12px;font-size:1.3rem}h3{margin:0 0 8px;font-size:1.05rem}h4{margin:10px 0 6px;color:var(--mu);font-size:.9rem}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:12px}
+.mu,small{color:var(--mu)}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+input,select,button.b{font:inherit;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);max-width:100%}
+button.b{background:var(--pri);color:#fff;border-color:var(--pri);cursor:pointer;font-weight:700}
+.sc-okul{--c:var(--oks)}.sc-dershane{--c:var(--drs)}.hw-okul{--c:var(--okh)}.hw-dershane{--c:var(--drh)}.wk{--c:var(--wk)}
+.it,.ch{border-left:4px solid var(--c);background:color-mix(in srgb,var(--c) 24%,var(--card))}
+.it{display:flex;gap:10px;align-items:center;padding:8px 10px;margin-bottom:6px;border-radius:6px}
+.it>div{flex:1}.it input{width:22px;height:22px;accent-color:var(--c)}
+.it .x,.ph .x{border:0;background:none;color:var(--mu);cursor:pointer;font-size:1.1rem}
+.sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.sum div{text-align:center}.sum b{display:block;font-size:2rem;color:var(--xp)}
+.chart{display:flex;align-items:flex-end;gap:6px;height:180px;padding-top:20px}
+.chart div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;font-size:.75rem}
+.chart small{text-align:center;line-height:1.15;font-size:.68rem}.chart i{display:block;width:100%;background:var(--pri);border-radius:4px 4px 0 0;min-height:2px}
+.scroll{overflow-x:auto}.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;min-width:700px}
+.gh{text-align:center;font-weight:700;color:var(--mu)}
+.day{min-height:96px;border:1px solid var(--line);border-radius:8px;padding:3px;background:var(--card)}
+.day.td{border:2px solid var(--pri)}.day>b{font-size:.85rem}
+.ch{display:block;font-size:.72rem;padding:2px 4px;margin-top:2px;border-radius:4px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.ch input{margin:0 3px 0 0;vertical-align:middle;accent-color:var(--c)}
+.bars{display:flex;gap:2px}.bar{flex:1;height:8px;border-radius:2px;background:var(--c)}
+.lg{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;font-size:.8rem}.lg span{padding:2px 8px;border-radius:10px;border-left:4px solid var(--c);background:color-mix(in srgb,var(--c) 13%,var(--card))}
+.ch.sc-okul,.ch.sc-dershane,.it.sc-okul,.it.sc-dershane,.lg span.sc-okul,.lg span.sc-dershane{background:var(--c);color:#fff;border-left-color:#fff6}
+.sc-okul small,.sc-dershane small{color:#fff}
+.hw-okul,.hw-dershane{font-weight:600}.ch.hw-okul,.it.hw-okul,.lg span.hw-okul,.ch.hw-dershane,.it.hw-dershane,.lg span.hw-dershane{border-left-width:6px;background:color-mix(in srgb,var(--c) 28%,var(--card))}
+.ch.wk,.it.wk,.lg span.wk{border-left-style:dashed;border:1px dashed var(--c);border-left-width:4px}
+.imgs{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.ph{position:relative}.ph img{width:100%;height:150px;object-fit:cover;border-radius:8px;cursor:zoom-in}.ph .x{position:absolute;top:2px;right:2px;background:#0008;color:#fff;border-radius:50%;width:24px;height:24px;padding:0}
+.wg{display:grid;grid-template-columns:64px repeat(7,minmax(120px,1fr));min-width:900px;border:1px solid var(--line);border-radius:8px;background:var(--card)}
+.wg>div{border-bottom:1px solid var(--line);border-right:1px solid var(--line);padding:2px 3px;min-height:30px}
+.tdh{color:var(--pri)}.hr{font-size:.75rem;color:var(--mu);text-align:right}.hr.lb{font-weight:700;color:var(--ink);text-align:left}
+.slot.big{min-height:80px}.wg .big{min-height:60px}.ch.w{white-space:normal}.ch[draggable=true]{cursor:grab}.ch .x{border:0;background:none;cursor:pointer;padding:0 2px;float:right}.dn{cursor:pointer;text-decoration:underline}#sy{font-size:.8rem;margin-left:auto}
+.hero{display:flex;gap:16px;align-items:center;background:linear-gradient(135deg,#4f46e5,#06b6d4 70%,#22c55e);color:#fff;border-radius:18px;padding:20px;margin-bottom:12px}.hero .chip{background:#ffffff33;padding:4px 10px;border-radius:14px;font-size:.85rem}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:12px}.stats .card{margin:0}.big{display:block;font-size:1.8rem;font-weight:800}
+.hg{display:grid;grid-template-columns:repeat(12,1fr);gap:12px}.hg>.card{margin:0}.s6{grid-column:span 6}.s12{grid-column:span 12}@media(max-width:800px){.s6{grid-column:span 12}}
+.pb{height:8px;background:var(--line);border-radius:6px;overflow:hidden;margin:6px 0}.pb i{display:block;height:100%;background:linear-gradient(90deg,#f5a524,#f97316)}
+.ring{flex:none;width:68px;height:68px;border-radius:50%;background:conic-gradient(var(--pri) calc(var(--p)*1%),var(--line) 0);display:grid;place-items:center}.ring b{background:var(--card);width:52px;height:52px;border-radius:50%;display:grid;place-items:center;font-size:.85rem}
+.nrow{display:grid;grid-template-columns:120px 1fr 40px;gap:8px;align-items:center;font-size:.9rem}
+.bds{display:flex;flex-wrap:wrap;gap:10px}.bd{width:90px;text-align:center;font-size:2rem}.bd small{display:block;font-size:.7rem}.bd.off{filter:grayscale(1);opacity:.35}
+.more{float:right;border:0;background:none;color:var(--pri);cursor:pointer;font:inherit}
+.tb td,.tb th{padding:4px 8px;text-align:left}.tb input{width:90px}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--pri);color:#fff;padding:10px 18px;border-radius:24px;font-weight:700;opacity:0;transition:opacity .3s;z-index:20;pointer-events:none}
+@media(min-width:900px){body{display:grid;grid-template-columns:210px 1fr;align-items:start}header{grid-column:1/3}nav{flex-direction:column;position:sticky;top:0;height:calc(100vh - 60px);border-right:1px solid var(--line);border-bottom:0;overflow-y:auto}nav button{text-align:left;border-radius:12px}main{max-width:1250px;width:100%}}
+.mascot{width:120px;height:120px;object-fit:cover;border-radius:20px;box-shadow:0 4px 14px #0004;flex:none}@media(max-width:600px){.mascot{width:84px;height:84px}}
+.chart i.cur{background:linear-gradient(180deg,#f5a524,#f97316)}
+.fwb{position:relative;overflow:hidden;margin-top:12px;padding:18px;min-height:150px;border-radius:14px;background:linear-gradient(135deg,#1e1b4b,#4338ca);color:#fff;text-align:center}.fwb canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}.fwb>:not(canvas){position:relative}.fwb h3{color:#fff}.fwb .big{color:#ffd166}
+.av{position:relative;flex:none}.av .mascot{display:block;cursor:pointer}.camb{position:absolute;right:-6px;bottom:-6px;border:0;background:#fff;color:#222;border-radius:50%;width:34px;height:34px;font-size:1rem;cursor:pointer;box-shadow:0 2px 6px #0005}.camb.rm{right:auto;left:-6px;font-size:.8rem}
+.stk{margin:0;width:100%;display:flex;flex-direction:column-reverse;border-radius:4px 4px 0 0;overflow:hidden;min-height:2px}.stk:empty{background:var(--line)}.stk.cur{outline:2px solid #f97316}.stk em{display:flex;align-items:center;justify-content:center;font-style:normal;font-size:.62rem;color:#fff;font-weight:700;min-height:1px;overflow:hidden;text-shadow:0 0 3px #000a}
+.lgq span{color:#fff!important;text-shadow:0 0 3px #0008;border-left:0!important}
+.qr{display:flex;align-items:center;gap:6px;font-size:.85rem;margin-top:5px}.qr i{width:10px;height:10px;border-radius:50%;flex:none}.qr span{flex:1}
+.dot{background:#ef4444;color:#fff;border-radius:10px;padding:0 6px;font-size:.72rem;margin-left:4px}
+.msgc{display:flex;gap:14px;align-items:center;margin-bottom:12px}.msgc.new{border-color:#ef4444;box-shadow:0 0 0 3px #ef444433}.msgc h3{margin:0 0 4px}.msgc p{margin:0 0 4px;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}.msgc>div:nth-child(2){flex:1;min-width:0}
+.env{position:relative;font-size:2.4rem;flex:none}.env em{position:absolute;top:-4px;right:-8px;background:#ef4444;color:#fff;border-radius:50%;min-width:20px;height:20px;font:700 .75rem/20px sans-serif;text-align:center}
+.env.ring{animation:shake 1.6s infinite}@keyframes shake{0%,60%,100%{transform:rotate(0)}10%,30%,50%{transform:rotate(-14deg)}20%,40%{transform:rotate(14deg)}}@media(prefers-reduced-motion:reduce){.env.ring{animation:none}}
+.bub{max-width:85%;padding:10px 12px;border-radius:14px;margin:8px 0}.bub.o{background:color-mix(in srgb,#2563eb 18%,var(--card));margin-right:auto}.bub.d{background:color-mix(in srgb,#f97316 20%,var(--card));margin-left:auto}.bub small{display:block;margin-top:4px}.bub .x{float:right;border:0;background:none;color:var(--mu);cursor:pointer}
+textarea{font:inherit;padding:8px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);width:100%;min-height:80px}
+.sl{text-align:center}.slv{background:color-mix(in srgb,var(--ink) 6%,transparent);border-radius:12px;min-height:160px;display:flex;align-items:center;justify-content:center;overflow:hidden}.slv img{max-width:100%;max-height:65vh;cursor:zoom-in}.hg .slv img{max-height:42vh}.slc{display:flex;gap:14px;align-items:center;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.mrow{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}.mth{width:56px;height:56px;border-radius:8px;overflow:hidden;background:var(--bg);display:grid;place-items:center;flex:none}.mth img{width:100%;height:100%;object-fit:cover}.mrow .x{border:0;background:none;color:var(--mu);cursor:pointer;font-size:1.1rem}
+.fl{display:inline-block;padding:8px 12px;border-radius:8px;background:var(--pri);color:#fff;font-weight:700;cursor:pointer}
+.lgb{border:0;color:#fff;padding:4px 12px;border-radius:14px;font:inherit;font-size:.82rem;cursor:pointer;text-shadow:0 0 3px #0008}.lgb.off{background:var(--line)!important;color:var(--mu);text-decoration:line-through;text-shadow:none}
+svg circle[data-tip]:hover{r:7}#tip{position:fixed;display:none;pointer-events:none;background:#111d;color:#fff;padding:5px 10px;border-radius:8px;font-size:.82rem;font-weight:600;z-index:30;white-space:nowrap}
+.card.fx{display:flex;flex-direction:column}.card.fx>.lg:last-child{margin-top:auto;padding-top:8px}
+#lb{display:none;position:fixed;inset:0;background:#000d;z-index:9;align-items:center;justify-content:center;padding:10px}#lb img{max-width:100%;max-height:100%}
+.pill.on{background:var(--pri);color:#fff}
+</style></head>
+<body>
+<header><h1>Deniz'in LGS Çalışma Asistanı</h1><div id="sy" data-act="push" style="cursor:pointer" title="Şimdi kaydet"></div><div id="xp"></div></header>
+<nav id="nav"></nav><main id="app"></main><div id="lb"><img></div><div id="toast"></div><div id="tip"></div>
+<script>
+const DERS={
+"Türkçe":["Fiilimsiler","Cümlenin Öğeleri","Fiil Çatısı","Sözcükte Anlam","Cümlede Anlam","Cümle Çeşitleri","Yazım Kuralları","Paragraf","Noktalama İşaretleri","Anlatım Bozuklukları"],
+"Matematik":["Çarpanlar Katlar","Üslü İfadeler","Kareköklü İfadeler","Veri Analizi","Basit Olayların Olma Olasılığı","Cebirsel İfadeler ve Özdeşlikler","Doğrusal Denklemler","Eşitsizlikler","Üçgenler","Eşlik ve Benzerlik","Dönüşüm Geometrisi","Geometrik Cisimler"],
+"Fen Bilimleri":["Mevsimler ve İklim","DNA ve Genetik Kod","Basınç","Madde ve Endüstri","Basit Makineler","Enerji Dönüşümleri ve Çevre Bilimi","Elektrik Yükleri ve Elektrik Enerjisi"],
+"İnkılap Tarihi":["Bir Kahraman Doğuyor","Milli Uyanış-Bağımsızlık Yolunda Atılan Adımlar","Milli Bir Destan-Ya İstiklal Ya Ölüm","Atatürkçülük ve Çağdaşlaşan Türkiye","Demokratikleşme Çabaları","Atatürk Dönemi Türk Dış Politikası","Atatürk'ün Ölümü ve Sonrası"],
+"İngilizce":["Friendship","Teen Life","In The Kitchen","On The Phone","The Internet","Adventures","Tourism","Chores","Science","Natural Forces"],
+"Din Kültürü":["Kader İnancı","Zekat ve Sadaka","Din ve Hayat","Hz. Muhammed'in Örnekliği","Kur'an-ı Kerim ve Özellikleri"]};
+const EXTRA=['Rehberlik','Resim','Beden Eğitimi','Müzik','Çevre','Görgü Kuralları','Teknoloji Tasarım','Ahlak'],ALL=()=>[...Object.keys(DERS),...EXTRA];
+const GS=['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'],GUN=['Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi','Pazar'],AY=['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
+const MENU=[['ana','🏠 Ana Sayfa'],['bugun','📅 Bugün'],['puan','⭐ Puanlarım'],['takvim','🗓️ Takvimim'],['odev','📘 Ödevler'],['calisma','✏️ Çalışmalarım'],['eksik','⚠️ Eksikler'],['yanlis','❌ Yanlışlarım'],['not','📚 Notlarım'],['soru','📝 Soru Sayım'],['sinav','🎯 Deneme Sınavlarım'],['sdt','📆 Sınav Tarihlerim'],['bilgi','💡 Bilgi Köşesi'],['msg','💌 Mesajlarım'],['ayar','⚙️ Ayarlar']];
+const DEF=()=>({sched:[],hw:[],work:[],wrong:[],notes:[],qs:[],exams:[],sd:[],msgs:[],seen:{},info:[],qset:[],avatar:'',lgs:'',goal:300,name:'Deniz',id:1});let S=DEF(),view='ana',mon=new Date(),flt='all',wf={d:'',k:''},DB=null,cal='hafta',GH=null,sync='',examT='genel',qmon=null,fwDone=false,WHO='Deniz',NEW=new Set(),HOLD=new Set(),SL={},SEL={},HID={};
+const $=s=>document.querySelector(s),v=id=>$('#'+id).value;
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const pad=n=>String(n).padStart(2,'0'),ymd=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const today=()=>ymd(new Date()),fd=s=>s.split('-').reverse().join('.'),dow=d=>(d.getDay()+6)%7;
+const mondayOf=d=>{const x=new Date(d);x.setDate(x.getDate()-dow(x));return x};let ws=mondayOf(new Date());
+const dO=x=>Object.keys(DERS).map(d=>`<option ${d==x?'selected':''}>${d}</option>`).join('');
+const kO=(d,x)=>(DERS[d]||[]).map(k=>`<option ${k==x?'selected':''}>${esc(k)}</option>`).join('')||'<option value="">Konu yok</option>';
+const dk=p=>`<select id="${p}d">${dO()}</select><select id="${p}k">${kO(Object.keys(DERS)[0])}</select>`;
+const tO=`<option value="okul">Okul</option><option value="dershane">Dershane</option>`;
+function migrate(){const O='Fen ve '+'Teknoloji';['sched','hw','work','wrong','notes','qs','sd'].forEach(k=>(S[k]||[]).forEach(x=>{if(x.ders==O)x.ders='Fen Bilimleri'}));(S.exams||[]).forEach(e=>{if(e.r&&e.r[O]){e.r['Fen Bilimleri']=e.r[O];delete e.r[O]}})}
+const idb=(m,k,val)=>new Promise(r=>{try{const o=DB.transaction('s',m=='r'?'readonly':'readwrite').objectStore('s'),q=m=='r'?o.get(k):o.put(val,k);q.onsuccess=()=>r(q.result);q.onerror=()=>r()}catch(e){r()}});
+const setSync=t=>{sync=t;const e=$('#sy');if(e)e.textContent=t};
+async function load(){try{DB=await new Promise((r,j)=>{const q=indexedDB.open('deniz-lgs',1);q.onupgradeneeded=()=>q.result.createObjectStore('s');q.onsuccess=()=>r(q.result);q.onerror=j});
+const st=await idb('r','state');if(st){S=Object.assign(S,st);migrate()}GH=(await idb('r','gh'))||null;WHO=(await idb('r','who'))||'Deniz'}catch(e){}
+if(GH)await pull()}
+let tm;function save(){idb('w','state',S);if(GH){clearTimeout(tm);setSync('💾 Yerel kaydedildi — GitHub arka planda');tm=setTimeout(push,700)}}
+const api=async(p,o={})=>{const c=new AbortController(),t=setTimeout(()=>c.abort(),o.method?20000:7000);try{return await fetch(`https://api.github.com/repos/${GH.o}/${GH.r}/contents/${p}`+(o.method?'':'?ref='+GH.b),{...o,cache:'no-store',signal:c.signal,headers:{Authorization:'Bearer '+GH.t,Accept:'application/vnd.github+json','Content-Type':'application/json'}})}finally{clearTimeout(t)}};
+const b64=x=>btoa(unescape(encodeURIComponent(x))),unb=x=>decodeURIComponent(escape(atob(x.replace(/\n/g,''))));
+let pushBusy=false,pushAgain=false;
+
+async function put(p,content,msg){
+  for(let n=0;n<2;n++){
+    let g;
+    try{g=await api(p)}catch(e){throw new Error(e.name==='AbortError'?'GitHub zaman aşımı':'GitHub bağlantı hatası')}
+    let sha;
+    if(g.ok)sha=(await g.json()).sha;
+    else if(g.status!==404)throw new Error('GET '+p+' HTTP '+g.status);
+    let r;
+    try{r=await api(p,{method:'PUT',body:JSON.stringify({message:msg,content,branch:GH.b,...(sha?{sha}:{})})})}catch(e){throw new Error(e.name==='AbortError'?'GitHub zaman aşımı':'GitHub bağlantı hatası')}
+    if(r.ok)return await r.json();
+    if(r.status===409&&n===0){await new Promise(res=>setTimeout(res,250));continue}
+    let detail='';try{detail=await r.text()}catch(_){}
+    throw new Error('PUT '+p+' HTTP '+r.status+(detail?' '+detail.slice(0,180):''));
+  }
+}
+
+async function push(){
+  if(!GH)return;
+  if(pushBusy){pushAgain=true;return}
+  pushBusy=true;
+  try{
+    setSync('☁️ GitHub kaydediliyor…');
+    const snap=JSON.parse(JSON.stringify(S));
+    for(const w of snap.wrong)if(w.img&&!w.up){
+      await put('fotolar/'+w.id+'.jpg',w.img.split(',')[1],'Yanlış soru fotoğrafı');
+      const live=S.wrong.find(x=>x.id===w.id);if(live)live.up=1;
+    }
+    for(const k of ['info','qset'])for(const e of snap[k])for(const p of e.pics)if(!p.up){
+      const d=IMG[p.id]||await idb('r','img'+p.id);if(!d)continue;
+      await put('bilgi/'+p.id+'.jpg',d.split(',')[1],'Bilgi köşesi resmi');
+      const le=S[k].find(x=>x.id===e.id),lp=le&&le.pics.find(x=>x.id===p.id);if(lp)lp.up=1;
+    }
+    await put('data.json',b64(JSON.stringify({...S,wrong:S.wrong.map(({img,...x})=>x)})),'Deniz LGS verileri');
+    await idb('w','state',S);
+    setSync('☁️ GitHub kaydedildi');
+  }catch(e){
+    console.error('GitHub kayıt hatası:',e);
+    await idb('w','state',S);
+    setSync('⚠️ GitHub kaydı başarısız — yerel kayıt korundu');
+  }finally{
+    pushBusy=false;
+    if(pushAgain){pushAgain=false;clearTimeout(tm);tm=setTimeout(push,700)}
+  }
+}
+
+async function pull(){
+  try{
+    setSync('⏳ GitHub okunuyor');
+    const g=await api('data.json');
+    if(g.ok){
+      const D=JSON.parse(unb((await g.json()).content)),old=Object.fromEntries(S.wrong.map(w=>[w.id,w.img]));
+      (D.wrong=D.wrong||[]).forEach(w=>w.img=old[w.id]||null);
+      S=Object.assign(DEF(),D);migrate();
+      for(const w of S.wrong)if(!w.img){
+        const r=await api('fotolar/'+w.id+'.jpg');
+        if(r.ok)w.img='data:image/jpeg;base64,'+(await r.json()).content.replace(/\n/g,'');
+      }
+      await idb('w','state',S);
+      setSync('☁️ GitHub ile güncel');
+    }else if(g.status==404){
+      await push();
+    }else throw new Error('GET data.json HTTP '+g.status);
+  }catch(e){
+    console.error('GitHub okuma hatası:',e);
+    setSync('⚠️ GitHub okunamadı — yerel veriler korunuyor');
+  }
+}
+const dn=()=>[...S.hw,...S.work].filter(x=>x.done&&x.dd);
+const xpIn=f=>dn().filter(x=>f(x.dd)).length*10;
+const wk0=()=>{const d=new Date();d.setDate(d.getDate()-dow(d));return ymd(d)};
+const chk=(t,x)=>`<input type="checkbox" data-t="${t}" data-id="${x.id}" ${x.done?'checked':''}>`;
+const del=(t,x)=>`<button class="x" data-act="del" data-t="${t}" data-id="${x.id}" title="Sil">✕</button>`;
+const hwL=h=>`<div class="it hw-${h.type}">${chk('hw',h)}<div><b>${esc(h.ders)}</b> ${esc(h.konu)} ${esc(h.desc)}<br><small>${h.type=='okul'?'Okul':'Dershane'} ödevi · Son gün: ${fd(h.due)}</small></div>${del('hw',h)}</div>`;
+const wL=w=>`<div class="it wk">${chk('work',w)}<div><b>${esc(w.ders)}</b> · ${esc(w.konu)}<br><small>${w.q} soru · ${w.min} dk · ${fd(w.date)}</small></div>${del('work',w)}</div>`;
+const hwT=h=>esc((h.type=='okul'?'Okul':'Dershane')+' ödevi\n'+h.ders+(h.konu?' – '+h.konu:'')+'\n'+(h.desc||'')+'\nSon tarih: '+fd(h.due));
+const scT=x=>esc((x.type=='okul'?'Okul':'Dershane')+' dersi\n'+x.time+' '+x.ders);
+const hwOn=ds=>S.hw.filter(h=>h.cr<=ds&&ds<=h.due&&(!h.done||h.due==ds));
+const plb=(t,x,ds)=>cal=='hafta'?`<button type="button" class="x" data-act="plc" data-t="${t}" data-id="${x.id}" data-n="${ds}" title="Saat seç">🕘</button>`:'';
+const plH=(x,ds)=>x.pl?x.pl[ds]:null;
+const hwC=(h,ds)=>`<label class="ch w hw-${h.type}" draggable="true" data-dt="hw" data-id="${h.id}" data-ds="${ds}" title="${hwT(h)}">${plb('hw',h,ds)}${chk('hw',h)}${h.due==ds?'📌 Son gün · ':''}${h.type=='okul'?'Okul':'Dershane'} · ${esc(h.ders)} ${esc(h.desc)}</label>`;
+const wC=w=>`<label class="ch w wk" draggable="true" data-dt="work" data-id="${w.id}" data-ds="${w.date}" title="${esc('Çalışma\n'+w.ders+' – '+w.konu+'\n'+w.q+' soru, '+w.min+' dk')}">${plb('work',w,w.date)}${chk('work',w)}${esc(w.ders)} ${w.q} soru/${w.min} dk</label>`;
+const none=t=>`<p class="mu">${t}</p>`;
+const MASCOT="data:image/jpeg;base64,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";
+const gunK=ds=>Math.round((new Date(ds+'T00:00')-new Date(today()+'T00:00'))/864e5);
+const sdL=e=>{const k=gunK(e.date);return `<div class="it" style="--c:${k<0?'var(--mu)':k<=3?'#dc2626':'var(--pri)'}"><div><b>${esc(e.ders)}</b> · ${esc(e.tur)}${e.time?' · '+e.time:''}<br><small>${fd(e.date)}${e.not?' · '+esc(e.not):''}</small></div><b>${k<0?'':k==0?'Bugün!':k==1?'Yarın':k+' gün'}</b>${del('sd',e)}</div>`};
+const r2=x=>Math.round(x*100)/100,netOf=(d,y)=>r2((+d||0)-(+y||0)/3);
+const SAY=['Matematik','Fen Bilimleri'],SOZ=['Türkçe','İnkılap Tarihi','Din Kültürü','İngilizce'],QN={'Türkçe':20,'Matematik':20,'Fen Bilimleri':20,'İnkılap Tarihi':10,'İngilizce':10,'Din Kültürü':10},TUR={genel:'Genel Deneme',sayisal:'Branş – Sayısal',sozel:'Branş – Sözel'};
+const exRow=e=>`<div class="it" style="--c:var(--pri)"><div><b>${e.name?esc(e.name):TUR[e.tur]}</b> · ${fd(e.date)}<br><small>${TUR[e.tur]}${e.tur=='genel'?' · Puan '+(e.puan??'–')+' · Sayısal '+exNet(e,SAY)+' · Sözel '+exNet(e,SOZ):''} · ${Object.entries(e.r).map(([k,x])=>k+': '+netOf(x.d,x.y)).join(' · ')}</small></div><b>${e.tur=='genel'&&e.puan!=null?e.puan+' puan':exNet(e,exSet(e.tur))+' net'}</b>${del('exams',e)}</div>`;
+const exSet=t=>t=='sayisal'?SAY:t=='sozel'?SOZ:[...SAY,...SOZ];
+const exNet=(e,set)=>r2(Object.entries(e.r).filter(([k])=>set.includes(k)).reduce((a,[k,x])=>a+netOf(x.d,x.y),0));
+const lvl=()=>{const x=dn().length*10;return[Math.floor(x/100)+1,x%100,x]};
+const streak=()=>{const ds=new Set(dn().map(x=>x.dd));let n=0,d=new Date();if(!ds.has(ymd(d)))d.setDate(d.getDate()-1);while(ds.has(ymd(d))){n++;d.setDate(d.getDate()-1)}return n};
+const wsOf=ds=>ymd(mondayOf(new Date(ds+'T00:00')));
+const qWeeks=n=>{const o=[],m=mondayOf(new Date());for(let i=n-1;i>=0;i--){const d=new Date(m.getFullYear(),m.getMonth(),m.getDate()-7*i),k=ymd(d);o.push([AY[d.getMonth()]+'<br>'+Math.ceil(d.getDate()/7)+'. hafta',S.qs.filter(q=>wsOf(q.date)==k).reduce((a,q)=>a+q.n,0)])}return o};
+const qDays=n=>{const o=[],t=new Date();for(let i=n-1;i>=0;i--){const d=new Date(t.getFullYear(),t.getMonth(),t.getDate()-i),k=ymd(d);o.push([GS[dow(d)]+'<br>'+d.getDate()+' '+AY[d.getMonth()].slice(0,3),S.qs.filter(q=>q.date==k).reduce((a,q)=>a+q.n,0)])}return o};
+const qDef=()=>{const k=today().slice(0,7);return k<'2026-08'?'2026-08':k>'2027-06'?'2027-06':k};
+const DC={'Türkçe':'#ef4444','Matematik':'#2563eb','Fen Bilimleri':'#16a34a','İnkılap Tarihi':'#d97706','İngilizce':'#8b5cf6','Din Kültürü':'#0891b2','Paragraf':'#db2777'};
+const qSum=f=>{const o={};S.qs.filter(f).forEach(q=>o[q.ders]=(o[q.ders]||0)+q.n);return o},tt=b=>Object.values(b).reduce((a,x)=>a+x,0);
+const QB=()=>{const t=today(),fm=d=>d.getDate()+' '+AY[d.getMonth()],mon=mondayOf(new Date()),pm=new Date(mon.getFullYear(),mon.getMonth(),mon.getDate()-7),wk=m=>{const e=new Date(m.getFullYear(),m.getMonth(),m.getDate()+6);return[qSum(q=>wsOf(q.date)==ymd(m)),fm(m)+' – '+fm(e)]},
+cm=t.slice(0,7),n=new Date(),lm=new Date(n.getFullYear(),n.getMonth()-1,1),lk=lm.getFullYear()+'-'+pad(lm.getMonth()+1),mo=(k,d)=>[qSum(q=>q.date.startsWith(k)),AY[d.getMonth()]+' '+d.getFullYear()];
+const bx=(ti,[b,sub])=>`<div class="card"><small>${ti}</small><b class="big">${tt(b)} soru</b><small>${sub}</small>${Object.entries(b).filter(e=>e[1]>0).sort((a,b)=>b[1]-a[1]).map(([d,v])=>`<div class="qr"><i style="background:${DC[d]||'#64748b'}"></i><span>${esc(d)}</span><b>${v}</b></div>`).join('')||'<p class="mu">Bu dönemde soru girilmedi.</p>'}</div>`;
+return `<div class="stats">${bx('⏪ Geçen hafta',wk(pm))}${bx('📅 Bu hafta',wk(mon))}${bx('⏪ Geçen ay',mo(lk,lm))}${bx('📆 Bu ay',mo(cm,n))}</div>`};
+const NS=[...SAY,...SOZ];
+function dnet(tur){const set=tur=='genel'?NS:exSet(tur),hid=HID[tur]||(HID[tur]=new Set()),l=S.exams.filter(e=>e.tur==tur).sort((a,b)=>a.date>b.date?1:-1).slice(-8);
+if(!l.length)return none(tur=='genel'?'Henüz genel deneme girilmedi.':'Henüz branş sınavı girilmedi.');
+const names=tur=='genel'?set:[...set,'Toplam'],col=k=>k=='Toplam'?'#64748b':DC[k],val=(e,k)=>k=='Toplam'?exNet(e,set):(e.r[k]?netOf(e.r[k].d,e.r[k].y):0);
+const ser=names.filter(k=>!hid.has(k)).map(k=>({n:k,c:col(k),v:l.map(e=>val(e,k))}));
+const vs=ser.flatMap(x=>x.v),lo=vs.length?Math.floor(Math.min(...vs)-1):undefined,hi=vs.length?Math.ceil(Math.max(...vs)+1):undefined;
+return lineC(l.map(e=>fd(e.date).slice(0,5)),ser,tur=='genel'?undefined:lo,tur=='genel'?undefined:hi,170).replace(/<div class="lg">.*?<\/div>/s,'')+`<div class="lg">${names.map(k=>`<button class="lgb ${hid.has(k)?'off':''}" style="background:${col(k)}" data-act="tgd" data-t="${tur}" data-n="${k}" title="Grafikte göster / gizle">${k}</button>`).join('')}</div>`}
+const fts=iso=>{const d=new Date(iso);return d.getDate()+' '+AY[d.getMonth()]+' '+d.getFullYear()+' · '+pad(d.getHours())+':'+pad(d.getMinutes())};
+const unread=()=>S.msgs.filter(m=>m.from!=WHO&&!(S.seen[WHO]||[]).includes(m.id));
+function markSeen(){const r=S.seen[WHO]=S.seen[WHO]||[];let c=0;S.msgs.forEach(m=>{if(!r.includes(m.id)&&!HOLD.has(m.id)){r.push(m.id);c=1}});if(c)save()}
+const msgHtml=m=>esc(m.text).replace(/\n/g,'<br>');
+const MSGC=()=>{if(!S.msgs.length)return'';const l=S.msgs.slice().sort((a,b)=>a.ts<b.ts?1:a.ts>b.ts?-1:b.id-a.id)[0],n=unread().length;
+return `<div class="card msgc ${n?'new':''}"><div class="env ${n?'ring':''}">${n?'📩':'✉️'}${n?'<em>'+n+'</em>':''}</div><div><h3>${esc(l.from)}'den mesaj var</h3><p>${msgHtml(l)}</p><small class="mu">${fts(l.ts)}${n?' · okunmamış mesajın var!':''}</small></div><button class="b" data-act="go" data-n="msg">Mesajlara git ›</button></div>`};
+const stackC=a=>{const mx=Math.max(1,...a.map(x=>x[1]));return `<div class="chart">${a.map(x=>`<div><span>${x[1]}</span><p class="stk${x[2]?' cur':''}" style="height:${x[1]/mx*130}px">${Object.entries(x[3]).filter(e=>e[1]>0).sort((a,b)=>b[1]-a[1]).map(([d,n])=>`<em style="flex:${n};background:${DC[d]||'#64748b'}" title="${esc(d)}: ${n} soru">${n/mx*130>=13?n:''}</em>`).join('')}</p><small>${x[0]}</small></div>`).join('')}</div>`};
+const LGq=()=>`<div class="lg lgq">${Object.entries(DC).map(([d,c])=>`<span style="background:${c}">${d}</span>`).join('')}</div><small class="mu">Sütunun üstündeki sayı toplam soru, renkli bölümlerdeki sayılar derslere göre soru sayısıdır. Üzerine gelince ders adı görünür.</small>`;
+const qDaysM=ym=>{const[y,m]=ym.split('-').map(Number),n=new Date(y,m,0).getDate(),t=today(),o=[];for(let i=1;i<=n;i++){const k=ym+'-'+pad(i);const b=qSum(q=>q.date==k);o.push([GS[dow(new Date(y,m-1,i))]+'<br>'+i,tt(b),k==t,b])}return o};
+const qMonths=()=>{const o=[],c=today().slice(0,7);for(let i=0;i<11;i++){const d=new Date(2026,7+i,1),k=d.getFullYear()+'-'+pad(d.getMonth()+1);const b=qSum(q=>q.date.startsWith(k));o.push([AY[d.getMonth()]+'<br>'+d.getFullYear(),tt(b),k==c,b])}return o};
+const qWeeksR=()=>{const o=[],cur=wsOf(today()),end=new Date(2027,5,30);let d=new Date(2026,7,3);while(d<=end){const k=ymd(d);const b=qSum(q=>wsOf(q.date)==k);o.push([AY[d.getMonth()]+'<br>'+Math.ceil(d.getDate()/7)+'. hafta',tt(b),k==cur,b]);d=new Date(d.getFullYear(),d.getMonth(),d.getDate()+7)}return o};
+function fw(){const c=$('#fw');if(!c||c.dataset.go!='1'||fwDone||matchMedia('(prefers-reduced-motion: reduce)').matches)return;fwDone=true;
+const x=c.getContext('2d'),W=c.width=c.offsetWidth,H=c.height=c.offsetHeight,P=[],t0=performance.now();let last=-999;
+const burst=()=>{const cx=W*(.15+Math.random()*.7),cy=H*(.2+Math.random()*.4),h=Math.random()*360;for(let i=0;i<60;i++){const a=Math.PI*2*i/60,v=1.5+Math.random()*2.5;P.push({x:cx,y:cy,vx:Math.cos(a)*v,vy:Math.sin(a)*v,l:1,h:h+Math.random()*40})}};
+const f=t=>{const el=t-t0;if(el<3500&&el-last>450){burst();last=el}x.clearRect(0,0,W,H);for(const p of P){p.x+=p.vx;p.y+=p.vy;p.vy+=.03;p.vx*=.99;p.l-=.012;if(p.l>0){x.fillStyle='hsla('+p.h+',100%,60%,'+p.l+')';x.beginPath();x.arc(p.x,p.y,2.2,0,7);x.fill()}}
+for(let i=P.length-1;i>=0;i--)if(P[i].l<=0)P.splice(i,1);if(el<3500||P.length)requestAnimationFrame(f);else x.clearRect(0,0,W,H)};requestAnimationFrame(f)}
+const barC=a=>{const mx=Math.max(1,...a.map(x=>x[1]));return `<div class="chart">${a.map(x=>`<div><span>${x[1]}</span><i style="height:${x[1]/mx*130}px"${x[2]?' class="cur"':''}></i><small>${x[0]}</small></div>`).join('')}</div>`};
+const lineC=(lb,ser,lo,hi,hh)=>{if(!lb.length)return none('Henüz sınav girilmedi.');const W=420,H=hh||(ser.length>3?270:170),p=28,all=ser.flatMap(s=>s.v),mx=hi??Math.max(10,...all),mn=lo??Math.min(0,...all),x=i=>p+(lb.length>1?i*(W-2*p)/(lb.length-1):(W-2*p)/2),y=v=>H-p-(v-mn)/(mx-mn)*(H-2*p);
+return `<svg viewBox="0 0 ${W} ${H}" width="100%"><g style="stroke:var(--line)">${[0,.5,1].map(t=>`<line x1="${p}" x2="${W-p}" y1="${y(mn+t*(mx-mn))}" y2="${y(mn+t*(mx-mn))}"/>`).join('')}</g>${ser.map((s,si)=>`<polyline fill="none" stroke="${s.c}" stroke-width="3" points="${s.v.map((v,i)=>x(i)+','+y(v)).join(' ')}"/>${s.v.map((v,i)=>`<circle cx="${x(i)}" cy="${y(v)}" r="4.5" fill="${s.c}" data-c="${s.c}" data-tip="${s.n} · ${lb[i]}: ${Math.round(v*100)/100} ${s.n=='Puan'?'puan':'net'}" style="stroke:transparent;stroke-width:14px;cursor:pointer"></circle>`).join('')}`).join('')}${lb.map((l,i)=>`<text x="${x(i)}" y="${H-8}" font-size="10" text-anchor="middle" style="fill:var(--mu)">${l}</text>`).join('')}<text x="2" y="${y(mx)+4}" font-size="10" style="fill:var(--mu)">${mx}</text><text x="2" y="${y(mn)+4}" font-size="10" style="fill:var(--mu)">${mn}</text></svg><div class="lg">${ser.map(s=>`<span style="--c:${s.c};background:color-mix(in srgb,${s.c} 22%,var(--card))">${s.n}</span>`).join('')}</div>`};
+const exC=t=>{const l=S.exams.filter(e=>e.tur==t&&(t!='genel'||e.puan!=null)).sort((a,b)=>a.date>b.date?1:-1).slice(-8),lb=l.map(e=>fd(e.date).slice(0,5));
+if(t=='genel'){const v=l.map(e=>e.puan),lo=v.length?Math.max(100,Math.floor((Math.min(...v)-20)/50)*50):100,hi=v.length?Math.min(500,Math.ceil((Math.max(...v)+20)/50)*50):500;return lineC(lb,[{n:'Puan',c:'#4f46e5',v}],lo,hi)}
+return lineC(lb,[{n:'Net',c:t=='sayisal'?'#f97316':'#16a34a',v:l.map(e=>exNet(e,exSet(t)))}])};
+const longest=()=>{const a=[...new Set(dn().map(x=>x.dd))].sort();let b=0,c=0,p=null;for(const d of a){c=p&&Math.round((new Date(d+'T00:00')-new Date(p+'T00:00'))/864e5)==1?c+1:1;b=Math.max(b,c);p=d}return b};
+const BDC=()=>{const xp=dn().length*10,tq=S.qs.reduce((a,q)=>a+q.n,0),mp=Math.max(0,...S.exams.filter(e=>e.puan!=null).map(e=>e.puan)),ls=longest(),mk=(e,a,l,v)=>a.map(n=>[e,l(n),v>=n]);
+return [['🧠 Soru Sayım',mk('🧠',[1000,5000,10000,15000,20000,25000],n=>n+' soru',tq)],
+['📊 Deneme Sınavlarım',mk('📊',[3,5,10,15,20,25],n=>n+' sınav',S.exams.filter(e=>e.tur==='genel').length)],
+['🎯 Aldığım Puanlar',mk('🎯',[400,410,420,430,440,450,460,470,480,490,500],n=>n+' puan',mp)],
+['⚡ XP\'ler',mk('⚡',[100,500,1000,2500,5000,7500,10000],n=>n+' XP',xp)],
+['🔥 Günlük Girişler',mk('🔥',[3,7,15,30,60,90],n=>n+' gün seri',ls)],
+['✅ Tamamlanan Görevler',mk('✅',[10,50,100,250,500],n=>n+' görev',dn().length)]]};
+const cd=(sp,t,b,act,cls='')=>`<div class="card s${sp} ${cls}"><h3>${t}${act?` <button class="more" data-act="go" data-n="${act}">Tümü ›</button>`:''}</h3>${b}</div>`;
+function toast(m){const e=$('#toast');e.textContent=m;e.style.opacity=1;clearTimeout(toast.t);toast.t=setTimeout(()=>e.style.opacity=0,2200)}
+const CT=(()=>{const t=[];for(let n=0;n<256;n++){let c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;t[n]=c>>>0}return t})();
+const crc=u=>{let c=-1;for(const b of u)c=CT[(c^b)&255]^(c>>>8);return(c^-1)>>>0};
+function zip(files){const E=new TextEncoder(),parts=[],cen=[];let off=0;const w16=(a,v)=>a.push(v&255,v>>8&255),w32=(a,v)=>a.push(v&255,v>>8&255,v>>16&255,v>>>24&255);
+for(const[n,d]of files){const nb=E.encode(n),c=crc(d),h=[],g=[];w32(h,0x04034b50);w16(h,20);w16(h,0x0800);w16(h,0);w16(h,0);w16(h,0x21);w32(h,c);w32(h,d.length);w32(h,d.length);w16(h,nb.length);w16(h,0);
+w32(g,0x02014b50);w16(g,20);w16(g,20);w16(g,0x0800);w16(g,0);w16(g,0);w16(g,0x21);w32(g,c);w32(g,d.length);w32(g,d.length);w16(g,nb.length);w16(g,0);w16(g,0);w16(g,0);w16(g,0);w32(g,0);w32(g,off);
+parts.push(new Uint8Array(h),nb,d);cen.push(new Uint8Array(g),nb);off+=h.length+nb.length+d.length}
+let cs=0;cen.forEach(x=>cs+=x.length);const e=[];w32(e,0x06054b50);w16(e,0);w16(e,0);w16(e,files.length);w16(e,files.length);w32(e,cs);w32(e,off);w16(e,0);
+return new Blob([...parts,...cen,new Uint8Array(e)],{type:"application/vnd.openxmlformats-officedocument.wordprocessingml.document"})}
+function imgSize(src){return new Promise(r=>{const im=new Image();im.onload=()=>r([im.width,im.height]);im.onerror=()=>r([800,600]);im.src=src})}
+async function buildDocx(l){const E=new TextEncoder(),X='<?xml version="1.0" encoding="UTF-8" standalone="yes"?>',files=[],rels=[];let body='';
+for(let i=0;i<l.length;i++){const w=l[i],[pw,ph]=await imgSize(w.img),wc=pw/96*2.54,hc=ph/96*2.54,k=Math.min(17/wc,12.5/hc,1.5),cx=Math.round(wc*k*360000),cy=Math.round(hc*k*360000),n=i+1;
+files.push(['word/media/img'+n+'.jpg',Uint8Array.from(atob(w.img.split(',')[1]),c=>c.charCodeAt(0))]);rels.push(`<Relationship Id="rId${n+10}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/img${n}.jpg"/>`);
+const run=(t,sz,b)=>`<w:r><w:rPr>${b?'<w:b/>':''}<w:sz w:val="${sz}"/></w:rPr><w:t xml:space="preserve">${esc(t)}</w:t></w:r>`;
+body+=`<w:p><w:pPr>${i?'<w:pageBreakBefore/>':''}<w:spacing w:after="120"/></w:pPr>${run(w.ders+' – '+w.konu,30,1)}</w:p><w:p><w:pPr><w:spacing w:after="200"/></w:pPr>${run('Soru '+n+' / '+l.length,20,0)}</w:p>`
++`<w:p><w:pPr><w:jc w:val="center"/></w:pPr><w:r><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0"><wp:extent cx="${cx}" cy="${cy}"/><wp:docPr id="${n}" name="Soru ${n}"/><a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:nvPicPr><pic:cNvPr id="${n}" name="img${n}.jpg"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:embed="rId${n+10}"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${cx}" cy="${cy}"/></a:xfrm><a:prstGeom prst="rect"/></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r></w:p>`
++(w.not?`<w:p><w:pPr><w:spacing w:before="200"/></w:pPr>${run('Not: '+w.not,22,0)}</w:p>`:'')}
+const doc=X+`<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"><w:body>${body}<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1134" w:right="1134" w:bottom="1134" w:left="1134" w:header="567" w:footer="567" w:gutter="0"/></w:sectPr></w:body></w:document>`;
+const all=[['[Content_Types].xml',X+'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="jpg" ContentType="image/jpeg"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>'],
+['_rels/.rels',X+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>'],
+['word/document.xml',doc],['word/_rels/document.xml.rels',X+'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'+rels.join('')+'</Relationships>']].map(([n,t])=>[n,E.encode(t)]);
+return zip([...all,...files])}
+async function wdoc(){const o=k=>Object.keys(DERS).indexOf(k),l=S.wrong.filter(w=>w.img&&(!wf.d||w.ders==wf.d)&&(!wf.k||w.konu==wf.k)).sort((a,b)=>o(a.ders)-o(b.ders)||(DERS[a.ders]||[]).indexOf(a.konu)-(DERS[b.ders]||[]).indexOf(b.konu));
+if(!l.length){alert('İndirilecek yanlış soru fotoğrafı yok. Önce ders ve konu seç.');return}
+const blob=await buildDocx(l),a=document.createElement('a'),nm=['Yanlis_Sorular',wf.d,wf.k,today()].filter(Boolean).join('_').replace(/[^A-Za-z0-9ÇĞİÖŞÜçğıöşü_-]+/g,'_');
+a.href=URL.createObjectURL(blob);a.download=nm+'.docx';document.body.appendChild(a);a.click();a.remove();toast('Word dosyası hazır: '+l.length+' soru 📄')}
+const IMG={},LD=new Set(),byD=(a,b)=>a.date<b.date?1:a.date>b.date?-1:b.id-a.id;
+function ensurePic(p){if(IMG[p.id]||LD.has(p.id))return;LD.add(p.id);(async()=>{let d=await idb('r','img'+p.id);if(!d&&GH){try{const r=await api('bilgi/'+p.id+'.jpg');if(r.ok){d='data:image/jpeg;base64,'+(await r.json()).content.replace(/\n/g,'');await idb('w','img'+p.id,d)}}catch(e){}}
+if(d){IMG[p.id]=d;if(view=='ana'||view=='bilgi')render()}else LD.delete(p.id)})()}
+const latestOf=k=>S[k].slice().sort(byD)[0],selOf=k=>S[k].find(e=>e.id==SEL[k])||latestOf(k);
+const compn=f=>new Promise(async r=>{const im=new Image();im.onload=()=>{const k=Math.min(1,1400/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);r(c.toDataURL('image/jpeg',.8))};im.src=await rd(f)});
+const eTitle=e=>`${esc(e.title)} <small class="mu">· ${fd(e.date)}</small>`;
+const slide=(k,e)=>{if(!e)return none(k=='info'?'Henüz bilgi eklenmedi.':'Henüz LGS çıkmış soru eklenmedi.');if(!e.pics.length)return none('Bu bölümde resim yok.');const i=Math.min(SL[e.id]||0,e.pics.length-1),p=e.pics[i];ensurePic(p);
+return `<div class="sl"><div class="slv">${IMG[p.id]?`<img src="${IMG[p.id]}" data-act="zoom">`:'<span class="mu">Resim yükleniyor…</span>'}</div><div class="slc"><button class="b" data-act="sl" data-t="${k}" data-id="${e.id}" data-n="-1">◀ Önceki</button><b>${i+1} / ${e.pics.length}</b><button class="b" data-act="sl" data-t="${k}" data-id="${e.id}" data-n="1">Sonraki ▶</button></div></div>`};
+async function addMod(k){const p=k=='info'?'bi':'qs',t=v(p+'_t').trim(),fs=[...$('#'+p+'_f').files];if(!t){alert('Önce başlığı yaz.');return}if(!fs.length){alert('En az bir resim seç.');return}
+toast('Resimler hazırlanıyor…');const pics=[];for(const f of fs){const d=await compn(f),id=S.id++;IMG[id]=d;await idb('w','img'+id,d);pics.push({id,up:0})}
+const e={id:S.id++,title:t,date:v(p+'_d')||today(),pics};if(k=='qset')e.ref=+v('qs_r')||0;S[k].push(e);SEL[k]=e.id;SL[e.id]=0;save()}
+const PF=()=>`<details class="card"><summary><b>Ders programı ekle</b></summary><div class="row" style="margin-top:10px"><select id="scg">${GUN.map((g,i)=>`<option value="${i}">${g}</option>`).join('')}</select><input id="sct" type="time" value="09:00"><select id="scd">${[...ALL(),'Sosyal','Etüt'].map(d=>`<option>${d}</option>`).join('')}</select><select id="scy">${tO}</select><button class="b" data-act="addsc">Ekle</button></div>
+${S.sched.slice().sort((a,b)=>a.day-b.day||(a.time>b.time?1:-1)).map(s=>`<div class="it sc-${s.type}"><div>${GUN[s.day]} ${s.time} ${esc(s.ders)} <small>${s.type=='okul'?'Okul':'Dershane'}</small></div>${del('sched',s)}</div>`).join('')}</details>`;
+const LG=`<div class="lg"><span class="sc-okul">Okul dersi</span><span class="sc-dershane">Dershane dersi</span><span class="hw-okul">Okul ödevi</span><span class="hw-dershane">Dershane ödevi</span><span class="wk">Çalışma</span></div>`;
+const V={
+ana(){const t=today(),d=new Date(),hr=d.getHours(),gr=hr<6?'İyi geceler':hr<12?'Günaydın':hr<18?'İyi günler':'İyi akşamlar',[lv,pr,xp]=lvl(),sk=streak(),
+Q=["Bugün attığın küçük adım, yarın büyük fark yaratır!","Her soru seni LGS'ye bir adım daha yaklaştırır.","Yanlışlar, öğrenmenin en güzel öğretmenidir.","Vazgeçme! Başarı, tekrar edenlerindir.","Düzenli çalışan kazanır. Sen de bunu yapıyorsun!","Hedefin büyük, sen ondan daha güçlüsün!","Bir soru daha, bir net daha!"],q=Q[(d.getDate()+d.getMonth())%Q.length],
+pw=S.hw.filter(x=>!x.done).sort((a,b)=>a.due>b.due?1:-1),pk=S.work.filter(x=>!x.done).sort((a,b)=>a.date>b.date?1:-1),
+dh=S.hw.filter(x=>x.done).sort((a,b)=>b.dd>a.dd?1:-1),dw=S.work.filter(x=>x.done).sort((a,b)=>b.dd>a.dd?1:-1),
+wq=qWeeks(1)[0][1],pc=Math.min(100,Math.round(wq/S.goal*100)),
+av=[...Object.keys(DERS),...EXTRA.filter(k=>k!='Rehberlik'||S.notes.some(n=>n.ders==k))].map(k=>{const a=S.notes.filter(n=>n.ders==k);return[k,a.length?Math.round(a.reduce((s,n)=>s+n.puan,0)/a.length*10)/10:null]}),
+al=S.notes.length?Math.round(S.notes.reduce((s,n)=>s+n.puan,0)/S.notes.length*10)/10:'–',
+lg=S.lgs?Math.ceil((new Date(S.lgs+'T00:00')-new Date(t+'T00:00'))/864e5):null,
+td=hwOn(t).filter(h=>!h.done).length+S.work.filter(w=>!w.done&&w.date==t).length,bd=S.hw.filter(h=>h.done&&h.dd==t).length+S.work.filter(w=>w.done&&w.dd==t).length,
+sc=S.sched.filter(s=>s.day==dow(d)).sort((a,b)=>a.time>b.time?1:-1),bm=(()=>{const ym=t.slice(0,7),a=qDaysM(ym),mx=Math.max(...a.map(x=>x[1]));if(!(mx>0))return null;const i=a.findIndex(x=>x[1]==mx),dd=new Date(+ym.slice(0,4),+ym.slice(5)-1,i+1);return[i+1,mx,dd.getDate()+' '+AY[dd.getMonth()]+' '+GUN[dow(dd)]]})(),ux=S.sd.filter(e=>e.date>=t).sort((a,b)=>(a.date+(a.time||''))>(b.date+(b.time||''))?1:-1);
+return `<div class="hero"><div class="av"><img class="mascot" src="${S.avatar||MASCOT}" alt="" data-act="avp" title="Fotoğrafımı değiştir"><button class="camb" data-act="avp" title="Kendi fotoğrafımı ekle">📷</button>${S.avatar?'<button class="camb rm" data-act="avx" title="Varsayılan resme dön">✕</button>':''}</div><input id="avf" type="file" accept="image/*" hidden><div><h2 style="margin:0">${gr}, ${esc(S.name)}! 👋</h2><div>${q}</div><div class="row" style="margin-top:8px"><span class="chip">${td?'🎯 Bugün '+td+' görevin var':'🎉 Bugünkü görevlerin tamam!'}</span><span class="chip">🔥 ${sk} gün seri</span><span class="chip">📌 ${pw.length+pk.length} bekleyen</span>${ux.length?`<span class="chip">📆 ${esc(ux[0].ders)} sınavı: ${gunK(ux[0].date)==0?'bugün':gunK(ux[0].date)+' gün kaldı'}</span>`:''}</div></div></div>
+${MSGC()}<div class="stats"><div class="card"><small>⭐ Seviye ${lv}</small><b class="big">${xp} XP</b><div class="pb"><i style="width:${pr}%"></i></div><small>Sonraki seviyeye ${100-pr} XP</small></div>
+<div class="card"><small>🔥 Günlük seri</small><b class="big">${sk} gün</b><small>${sk?'Bugün de görev yap, seri bozulmasın!':'Bir görevi tamamla, seriye başla!'}</small></div>
+<div class="card row" style="flex-wrap:nowrap"><div class="ring" style="--p:${pc}"><b>${pc}%</b></div><div><small>📝 Bu hafta soru</small><b class="big">${wq}</b><small>Hedef ${S.goal}</small></div></div>
+<div class="card"><small>🎯 Bugünkü görevlerim</small><b class="big">${td} görev</b><small>${td?(bd?bd+' tanesini tamamladın, devam!':'Hadi başlayalım!'):(bd?'Hepsi tamam, harikasın! 🎉':'Bugün için görev yok')}</small></div>
+<div class="card"><small>🏆 Bu ay en çok soru çözdüğün gün</small><b class="big">${bm?bm[1]+' soru':'–'}</b><small>${bm?bm[2]:'Bu ay henüz soru girilmedi'}</small></div></div>
+<div class="hg">${(e=>cd(6,'💡 Bilgi Köşesi'+(e?': '+eTitle(e):''),slide('info',e),'bilgi'))(latestOf('info'))}${cd(6,'📚 Notlarım',av.map(([k,a])=>`<div class="nrow"><span>${k}</span><div class="pb"><i style="width:${a||0}%"></i></div><b>${a??'–'}</b></div>`).join(''),'not')}
+${cd(6,'📆 Yaklaşan sınavlarım',ux.slice(0,5).map(sdL).join('')||none('Yaklaşan sınav yok. Sınav Tarihlerim bölümünden ekleyebilirsin.'),'sdt')}
+${cd(6,'📝 Haftalık çözülen soru',barC(qWeeks(8)),'soru')}
+${cd(6,'📌 Bekleyen ödevler ('+pw.length+')',pw.slice(0,5).map(hwL).join('')||none('Bekleyen ödev yok 🎉'),'odev')}
+${cd(6,'📌 Bekleyen çalışmalar ('+pk.length+')',pk.slice(0,5).map(wL).join('')||none('Bekleyen çalışma yok 🎉'),'calisma')}
+${cd(6,'🎯 Genel deneme puanları',exC('genel'),'sinav')}
+${cd(6,'📘 Derslere göre netler (genel deneme)',dnet('genel'),'sinav')}
+${cd(6,'🔢 Branş sınavı – Sayısal net',dnet('sayisal'),'sinav','fx')}
+${cd(6,'📖 Branş sınavı – Sözel net',dnet('sozel'),'sinav','fx')}
+${cd(12,'🏅 Rozetlerim ('+BDC().reduce((a,c)=>a+c[1].filter(b=>b[2]).length,0)+'/'+BDC().reduce((a,c)=>a+c[1].length,0)+')',BDC().map(([t,l])=>`<h4>${t} (${l.filter(b=>b[2]).length}/${l.length})</h4><div class="bds">${l.map(b=>`<div class="bd ${b[2]?'':'off'}">${b[0]}<small>${b[1]}</small></div>`).join('')}</div>`).join(''))}</div>`},
+not(){return `<h2>Notlarım</h2><div class="card"><h3>Okulda aldığım not</h3><div class="row"><input id="nd" type="date" value="${today()}"><select id="nk">${ALL().map(x=>`<option>${x}</option>`).join('')}</select><select id="nt">${['1. Yazılı','2. Yazılı','Sözlü','Performans','Proje','Diğer'].map(x=>`<option>${x}</option>`).join('')}</select><input id="np" type="number" min="0" max="100" placeholder="Puan (0-100)" style="width:140px"><button class="b" data-act="addn">Notu ekle</button></div></div>`+ALL().map(k=>{const a=S.notes.filter(n=>n.ders==k).sort((x,y)=>x.date<y.date?1:-1);return a.length?`<div class="card"><h3>${k} · Ortalama ${Math.round(a.reduce((s,n)=>s+n.puan,0)/a.length*10)/10}</h3>${a.map(n=>`<div class="it" style="--c:var(--pri)"><div><b>${n.puan}</b> · ${esc(n.tur)}<br><small>${fd(n.date)}</small></div>${del('notes',n)}</div>`).join('')}</div>`:''}).join('')},
+soru(){const mk=qmon||qDef(),[y,m]=mk.split('-').map(Number),da=qDaysM(mk),tot=da.reduce((a,x)=>a+x[1],0),mx=Math.max(...da.map(x=>x[1])),bi=mx>0?da.findIndex(x=>x[1]==mx):-1,cur=mk==today().slice(0,7),wr=qWeeksR(),opts=[];
+for(let i=0;i<11;i++){const d=new Date(2026,7+i,1),k=d.getFullYear()+'-'+pad(d.getMonth()+1);opts.push(`<option value="${k}" ${k==mk?'selected':''}>${AY[d.getMonth()]} ${d.getFullYear()}</option>`)}
+const best=bi<0?`<p>${AY[m-1]} ayında henüz soru girilmedi.</p>`:`<h3>🎉 Tebrikler! ${cur?'Bu ay içerisinde':AY[m-1]+' ayında'} en çok soru çözdüğünüz gün:</h3><b class="big">${bi+1} ${AY[m-1]} ${GUN[dow(new Date(y,m-1,bi+1))]} · ${mx} soru</b>`;
+return `<h2>Soru Sayım</h2><div class="card row"><b>📅 Ay seç:</b><select id="qm">${opts.join('')}</select></div><div class="card"><h3>Çözdüğüm soruları ekle</h3><div class="row"><input id="qd" type="date" value="${today()}"><select id="qk">${[...Object.keys(DERS),'Paragraf'].map(x=>`<option>${x}</option>`).join('')}</select><input id="qn" type="number" min="1" placeholder="Soru sayısı" style="width:130px"><button class="b" data-act="addq">Ekle</button></div></div>
+<div class="card"><h3>Haftalık hedef</h3><div class="row"><input id="gl" type="number" min="1" value="${S.goal}" style="width:100px"> soru / hafta <button class="b" data-act="savegoal">Kaydet</button></div><div class="fwb"><canvas id="fw" data-go="${bi<0?0:1}"></canvas>${best}</div></div>
+${QB()}<div class="card"><h3>${AY[m-1]} ${y} · günlük çözülen soru (toplam ${tot})</h3><div class="scroll"><div style="min-width:${Math.max(600,da.length*36)}px">${stackC(da)}</div></div>${LGq()}</div>
+<div class="card"><h3>Haftalık çözülen soru (Ağustos 2026 – Haziran 2027)</h3><div class="scroll"><div style="min-width:${wr.length*54}px">${stackC(wr)}</div></div>${LGq()}</div><div class="card"><h3>Aylık çözülen soru (Ağustos 2026 – Haziran 2027)</h3><div class="scroll"><div style="min-width:700px">${stackC(qMonths())}</div></div>${LGq()}</div><div class="card"><h3>Kayıtlar (${S.qs.length})</h3>${S.qs.slice().sort((a,b)=>a.date<b.date?1:-1).map(q=>`<div class="it" style="--c:var(--wk)"><div><b>${q.n}</b> soru · ${esc(q.ders)}<br><small>${fd(q.date)}</small></div>${del('qs',q)}</div>`).join('')||none('Henüz kayıt yok.')}</div>`},
+bilgi(){const mk=(k,ti,pf)=>{const e=selOf(k),rest=S[k].filter(x=>!e||x.id!=e.id).sort(byD),ref=k=='qset'&&e&&e.ref?S.info.find(x=>x.id==e.ref):null,nm=k=='info'?'bilgi':'LGS çıkmış soru';
+return `<h2>${ti}</h2><div class="card"><h3>➕ Yeni ${nm} ekle</h3><div class="row"><input id="${pf}_t" placeholder="Başlık" style="min-width:200px"><input id="${pf}_d" type="date" value="${today()}">${k=='qset'?`<select id="qs_r"><option value="0">İlgili bilgi (isteğe bağlı)</option>${S.info.slice().sort(byD).map(x=>`<option value="${x.id}">${esc(x.title)} (${fd(x.date)})</option>`).join('')}</select>`:''}<input id="${pf}_f" type="file" accept="image/*" multiple><button class="b" data-act="${k=='info'?'addbil':'addqs'}">Kaydet</button></div><small class="mu">Resimler dosya adı sırasıyla slayt olarak görünür.</small></div>
+<div class="card"><h3>${e?eTitle(e):'Güncel '+nm}</h3>${ref?`<small class="mu">🔗 İlgili bilgi: ${esc(ref.title)}</small>`:''}${slide(k,e)}${e?`<div class="row" style="justify-content:center;margin-top:10px"><label class="fl">➕ Resim ekle<input type="file" accept="image/*" multiple hidden data-addpics="${k}:${e.id}"></label><button class="b" style="background:var(--mu)" data-act="delpic" data-t="${k}" data-id="${e.id}">🗑 Bu resmi sil</button><button class="b" style="background:var(--mu)" data-act="renk" data-t="${k}" data-id="${e.id}">✏️ Başlığı değiştir</button></div>`:''}</div>
+<div class="card"><h3>Önceki ${k=='info'?'bilgiler':'LGS çıkmış sorular'} (${rest.length})</h3>${rest.map(x=>{const p=x.pics[0];if(p)ensurePic(p);return `<div class="mrow"><div class="mth">${p&&IMG[p.id]?`<img src="${IMG[p.id]}">`:'🖼️'}</div><div style="flex:1"><b>${esc(x.title)}</b><br><small class="mu">${fd(x.date)} · ${x.pics.length} resim</small></div><button class="b" data-act="selk" data-t="${k}" data-id="${x.id}">Aç</button>${del(k,x)}</div>`}).join('')||none('Başka kayıt yok.')}</div>`};
+return mk('info','💡 Bilgi Köşesi','bi')},
+msg(){const L=S.msgs.slice().sort((a,b)=>a.ts<b.ts?1:a.ts>b.ts?-1:b.id-a.id),P=['Özgün','Deniz'];
+return `<h2>Mesajlarım</h2><div class="card row"><b>Bu cihazı kullanan:</b><select id="who">${P.map(p=>`<option ${p==WHO?'selected':''}>${p}</option>`).join('')}</select><small class="mu">Okunmamış mesaj uyarısı buna göre çalışır.</small></div>
+<div class="card"><h3>Yeni mesaj</h3><div class="row"><b>Yazan:</b><select id="mf">${P.map(p=>`<option ${p==WHO?'selected':''}>${p}</option>`).join('')}</select></div><textarea id="mt" placeholder="Mesajını yaz…" style="margin:8px 0"></textarea><button class="b" data-act="addmsg">Gönder 💌</button></div>
+<div class="card"><h3>Mesajlar (${L.length})</h3>${L.map(m=>`<div class="bub ${m.from=='Özgün'?'o':'d'}"><button class="x" data-act="del" data-t="msgs" data-id="${m.id}" title="Sil">✕</button><b>${esc(m.from)}</b>${NEW.has(m.id)?'<span class="dot">Yeni</span>':''}<br>${msgHtml(m)}<small class="mu">${fts(m.ts)}</small></div>`).join('')||none('Henüz mesaj yok. İlk mesajı sen yaz!')}</div>`},
+sdt(){const t=today(),u=S.sd.filter(e=>e.date>=t).sort((a,b)=>a.date>b.date?1:-1),p=S.sd.filter(e=>e.date<t).sort((a,b)=>a.date<b.date?1:-1);return `<h2>Sınav Tarihlerim</h2><div class="card"><h3>Yeni sınav tarihi</h3><div class="row"><input id="xd" type="date"><input id="xh" type="time"><select id="xk"><option>Genel (tüm dersler)</option>${ALL().map(x=>`<option>${x}</option>`).join('')}</select><select id="xt">${['Okul yazılısı','Deneme sınavı','Branş sınavı','Dershane sınavı','Diğer'].map(x=>`<option>${x}</option>`).join('')}</select><input id="xn" placeholder="Not (konu, yer…)"><button class="b" data-act="addsd">Ekle</button></div></div><div class="card"><h3>Yaklaşan sınavlar (${u.length})</h3>${u.map(sdL).join('')||none('Yaklaşan sınav yok.')}</div><div class="card"><h3>Geçmiş sınavlar</h3>${p.map(sdL).join('')||none('Henüz geçmiş sınav yok.')}</div>`},
+sinav(){const set=exSet(examT);return `<h2>Deneme Sınavlarım</h2><div class="card"><h3>Yeni sınav sonucu</h3><div class="row"><select id="et">${Object.entries(TUR).map(([k,n])=>`<option value="${k}" ${k==examT?'selected':''}>${n}${k=='genel'?' (Sayısal + Sözel)':''}</option>`).join('')}</select><input id="ed" type="date" value="${today()}"><input id="en" placeholder="Sınav adı (isteğe bağlı)">${examT=='genel'?'<input id="ep" type="number" min="100" max="500" step="any" placeholder="Puan (100-500)" style="width:150px">':''}</div>
+<table class="tb"><tr><th>Ders</th><th>Soru</th><th>Doğru</th><th>Yanlış</th></tr>${set.map((k,i)=>`<tr><td>${k}</td><td><input id="q${i}" type="number" min="0" value="${QN[k]}"></td><td><input id="d${i}" type="number" min="0"></td><td><input id="y${i}" type="number" min="0"></td></tr>`).join('')}</table><p class="mu">Net = Doğru − Yanlış ÷ 3</p><button class="b" data-act="addex">Sonucu kaydet</button></div>
+<div class="card"><h3>Girilen sınavlar</h3>${[['📝 Genel Deneme Sınavları',e=>e.tur=='genel'],['🔢 Branş Sınavları',e=>e.tur!='genel']].map(([t,f])=>{const l=S.exams.filter(f).sort((a,b)=>a.date<b.date?1:-1);return `<h3 style="margin:16px 0 8px;color:var(--pri)">${t} (${l.length})</h3>`+(l.map(exRow).join('')||none('Bu bölümde henüz sınav girilmedi.'))}).join('')}</div>`},
+bugun(){const t=today(),d=new Date(),sc=S.sched.filter(s=>s.day==dow(d)).sort((a,b)=>a.time>b.time?1:-1),hw=hwOn(t).filter(h=>!h.done),wk=S.work.filter(w=>w.date==t&&!w.done),hd=S.hw.filter(h=>h.done&&h.dd==t),wd=S.work.filter(w=>w.done&&w.dd==t),nd=hd.length+wd.length,all=[...hw,...wk];
+return `<h2>${d.getDate()} ${AY[d.getMonth()]} ${GUN[dow(d)]}</h2><div class="card"><b>${nd}/${all.length+nd}</b> görev tamamlandı. Her görev +10 XP.</div>
+<div class="card"><h3>Ders programı</h3>${sc.map(s=>`<div class="it sc-${s.type}"><div>${s.time} ${esc(s.ders)} <small>${s.type=='okul'?'Okul':'Dershane'}</small></div></div>`).join('')||none('Bugün için ders programı girilmemiş. Takvimim bölümünden ekleyebilirsin.')}</div>
+<div class="card"><h3>Bugün yapılması gereken ödevler</h3>${hw.map(hwL).join('')||none('Bugün için ödev yok.')}</div>
+<div class="card"><h3>Bugünkü çalışmalar</h3>${wk.map(wL).join('')||none('Bugün için çalışma planı yok. Çalışmalarım bölümünden ekle.')}</div>
+<div class="card"><h3>Tamamlanan ödevler (${hd.length})</h3>${hd.map(hwL).join('')||none('Bugün henüz ödev tamamlanmadı.')}</div>
+<div class="card"><h3>Tamamlanan çalışmalar (${wd.length})</h3>${wd.map(wL).join('')||none('Bugün henüz çalışma tamamlanmadı.')}</div>`},
+puan(){const d=new Date(),mk=d.getFullYear()+'-'+pad(d.getMonth()+1),tot=dn().length*10;
+const vals=[];for(let i=11;i>=0;i--){const m=new Date(d.getFullYear(),d.getMonth()-i,1),k=m.getFullYear()+'-'+pad(m.getMonth()+1);vals.push([AY[m.getMonth()].slice(0,3),xpIn(s=>s.startsWith(k))])}
+const mx=Math.max(20,...vals.map(a=>a[1]));
+return `<h2>Puanlarım</h2><div class="card sum"><div><b>${xpIn(s=>s==today())}</b>Bugün</div><div><b>${xpIn(s=>s>=wk0())}</b>Bu hafta</div><div><b>${xpIn(s=>s.startsWith(mk))}</b>Bu ay</div><div><b>${tot}</b>Toplam XP</div></div>
+<div class="card"><h3>Aylık puanlar</h3><div class="chart">${vals.map(a=>`<div><span>${a[1]}</span><i style="height:${a[1]/mx*130}px"></i><small>${a[0]}</small></div>`).join('')}</div></div>`},
+takvim(){return `<h2>Takvimim</h2><div class="row" style="margin-bottom:10px">${['hafta','ay'].map(k=>`<button class="b" style="${cal==k?'':'background:var(--card);color:var(--ink)'}" data-act="cal" data-n="${k}">${k=='ay'?'Aylık':'Haftalık (08:00–00:00)'}</button>`).join('')}</div>${cal=='ay'?V.ay():V.hafta()}${PF()}`},
+hafta(){const t=today(),days=[...Array(7)].map((_,i)=>{const d=new Date(ws.getFullYear(),ws.getMonth(),ws.getDate()+i);return[d,ymd(d)]}),hrOf=x=>{const h=+x.time.slice(0,2);return h==0?24:h<8?8:h};
+let g='<div class="gh"></div>'+days.map(([d,ds])=>`<div class="gh ${ds==t?'tdh':''}">${GS[dow(d)]} ${d.getDate()}.${pad(d.getMonth()+1)}</div>`).join('');
+for(let h=8;h<=24;h++)g+=`<div class="hr">${pad(h%24)}:00</div>`+days.map(([d,ds],i)=>`<div class="slot" data-ds="${ds}" data-h="${h}">${S.sched.filter(x=>x.day==i&&hrOf(x)==h).map(x=>`<div class="ch w sc-${x.type}" title="${scT(x)}">${x.time} ${esc(x.ders)}</div>`).join('')}${hwOn(ds).filter(x=>!x.done&&plH(x,ds)==h).map(x=>hwC(x,ds)).join('')}${S.work.filter(w=>!w.done&&w.date==ds&&plH(w,ds)==h).map(wC).join('')}</div>`).join('');
+g+='<div class="hr lb">Ödevlerim</div>'+days.map(([d,ds])=>`<div class="slot big" data-ds="${ds}" data-h="x">${hwOn(ds).filter(h=>!h.done&&plH(h,ds)==null).map(h=>hwC(h,ds)).join('')}</div>`).join('');
+g+='<div class="hr lb">Çalışmalarım</div>'+days.map(([d,ds])=>`<div class="slot big" data-ds="${ds}" data-h="x">${S.work.filter(w=>!w.done&&w.date==ds&&plH(w,ds)==null).map(wC).join('')}</div>`).join('');
+const ndr=x=>x.replace('draggable="true"','').replace(/<button[^>]*data-act="plc"[^>]*>.*?<\/button>/,'');
+g+='<div class="hr lb">Tamamlanan ödevlerim</div>'+days.map(([d,ds])=>`<div class="big">${S.hw.filter(h=>h.done&&h.dd==ds).map(h=>ndr(hwC(h,''))).join('')}</div>`).join('');
+g+='<div class="hr lb">Tamamlanan çalışmalarım</div>'+days.map(([d,ds])=>`<div class="big">${S.work.filter(w=>w.done&&w.dd==ds).map(w=>ndr(wC(w))).join('')}</div>`).join('');
+return `<div class="card row" style="justify-content:space-between"><button class="b" data-act="wn" data-n="-1">‹</button><h3 style="margin:0">${fd(days[0][1])} – ${fd(days[6][1])}</h3><button class="b" data-act="wn" data-n="1">›</button></div><div class="card scroll"><div class="wg">${g}</div>${LG}<p class="mu">Ödevin üzerine gelince ayrıntısını görürsün. Tamamlanan ödev ve çalışmalar tiklendiği günün altındaki "Tamamlanan" satırlarına geçer. Ödev ya da çalışmayı sürükleyip o günün istediğin saatine bırakabilirsin (geri almak için alttaki satıra bırak; dokunmatik ekranda 🕘 düğmesiyle saat seç). Ödev, son gününe kadar her gün "Ödevlerim" satırında görünür.</p></div>`},
+ay(){const y=mon.getFullYear(),m=mon.getMonth(),n=new Date(y,m+1,0).getDate(),off=dow(new Date(y,m,1)),t=today();
+let c=GS.map(g=>`<div class="gh">${g}</div>`).join('')+'<div></div>'.repeat(off);
+for(let i=1;i<=n;i++){const ds=`${y}-${pad(m+1)}-${pad(i)}`,wd=(off+i-1)%7;
+const sc=S.sched.filter(s=>s.day==wd).sort((a,b)=>a.time>b.time?1:-1).map(s=>`<div class="ch sc-${s.type}" title="${scT(s)}">${s.time} ${esc(s.ders)}</div>`).join('');
+const hw=S.hw.filter(h=>h.due==ds).map(h=>hwC(h,ds)).join('');
+const wk=S.work.filter(w=>w.date==ds).map(wC).join('');
+const bars=hwOn(ds).filter(h=>!h.done).map(h=>`<span class="bar hw-${h.type}" title="${hwT(h)}"></span>`).join('');
+c+=`<div class="day ${ds==t?'td':''}"><b class="dn" data-act="wk" data-n="${ds}" title="Haftalık görünümde aç">${i}</b><div class="bars">${bars}</div>${sc}${hw}${wk}</div>`}
+return `<div class="card"><div class="row" style="justify-content:space-between"><button class="b" data-act="mo" data-n="-1">‹</button><h3 style="margin:0">${AY[m]} ${y}</h3><button class="b" data-act="mo" data-n="1">›</button></div></div>
+<div class="card scroll"><div class="cal">${c}</div><div class="lg"><span class="sc-okul">Okul dersi</span><span class="sc-dershane">Dershane dersi</span><span class="hw-okul">Okul ödevi (📌 son gün)</span><span class="hw-dershane">Dershane ödevi</span><span class="wk">Çalışma</span></div></div>
+`},
+odev(){const f=S.hw.filter(h=>flt=='all'||h.type==flt).sort((a,b)=>a.due>b.due?1:-1);
+const sec=(t,l)=>`<div class="card"><h3>${t} (${l.length})</h3>${['okul','dershane'].map(ty=>{const x=l.filter(h=>h.type==ty);return x.length?`<h4>${ty=='okul'?'Okul':'Dershane'} ödevleri</h4>`+x.map(hwL).join(''):''}).join('')||none('Burada ödev yok.')}</div>`;
+return `<h2>Ödevler</h2><div class="card"><h3>Yeni ödev</h3><div class="row"><select id="hwt">${tO}</select><select id="hwd">${ALL().map(d=>`<option>${d}</option>`).join('')}</select><select id="hwk">${kO(Object.keys(DERS)[0])}</select><input id="hwx" placeholder="Açıklama (ör. s.45 test)"><label>Son tarih <input id="hwdue" type="date"></label><button class="b" data-act="addhw">Ödevi ekle</button></div></div>
+<div class="row" style="margin-bottom:10px">${[['all','Tümü'],['okul','Okul'],['dershane','Dershane']].map(a=>`<button class="b ${flt==a[0]?'':'pill'}" style="${flt==a[0]?'':'background:var(--card);color:var(--ink)'}" data-act="flt" data-n="${a[0]}">${a[1]}</button>`).join('')}</div>
+${sec('Tamamlanmayan ödevler',f.filter(h=>!h.done))}${sec('Tamamlanan ödevler',f.filter(h=>h.done))}`},
+calisma(){return `<h2>Çalışmalarım</h2><div class="card"><h3>Yeni çalışma</h3><div class="row"><input id="wdt" type="date" value="${today()}">${dk('w')}<label>Soru <input id="wq" type="number" min="1" value="20" style="width:80px"></label><label>Süre (dk) <input id="wm" type="number" min="1" value="30" style="width:80px"></label><button class="b" data-act="addw">Çalışmayı ekle</button></div></div>
+<div class="card">${S.work.slice().sort((a,b)=>a.date<b.date?1:-1).map(wL).join('')||none('Henüz çalışma yok.')}</div>`},
+eksik(){const t=today(),h=S.hw.filter(x=>!x.done&&x.due<t),w=S.work.filter(x=>!x.done&&x.date<t);
+return `<h2>Eksikler</h2><div class="card"><h3>Tamamlanmamış ödevler (${h.length})</h3>${h.map(hwL).join('')||none('Eksik ödev yok, harika!')}</div><div class="card"><h3>Tamamlanmamış çalışmalar (${w.length})</h3>${w.map(wL).join('')||none('Eksik çalışma yok, harika!')}</div>`},
+ayar(){const g=GH||{};return `<h2>Ayarlar</h2><div class="card"><h3>Profil</h3><div class="row"><input id="pn" value="${esc(S.name)}" placeholder="Adın"><label>LGS tarihi <input id="pl" type="date" value="${S.lgs||''}"></label><button class="b" data-act="savep">Kaydet</button></div></div><div class="card"><h3>GitHub'a kaydetme</h3><p class="mu">Veriler depoda <b>data.json</b> olarak, yanlış soru fotoğrafları <b>fotolar/</b> klasöründe saklanır. Bağlanınca depoda veri varsa o yüklenir. Jeton (token) yalnızca bu tarayıcıda durur. Verileri sayfanın durduğu depodan ayrı, <b>özel (private)</b> bir depoda tut. Jeton: GitHub → Settings → Developer settings → Fine-grained tokens → sadece bu depo, Contents: Read and write.</p><div class="row"><input id="gho" placeholder="Kullanıcı adı" value="${esc(g.o)}"><input id="ghr" placeholder="Depo adı" value="${esc(g.r)}"><input id="ghb" placeholder="Dal" value="${esc(g.b||'main')}"><input id="ght" type="password" placeholder="Jeton" value="${esc(g.t)}"><button class="b" data-act="ghsave">Bağlan ve kaydet</button><button class="b" data-act="ghoff" style="background:var(--mu)">Bağlantıyı kaldır</button></div><p>${esc(sync)||'Bağlı değil: veriler yalnızca bu tarayıcıda.'}</p></div>`},
+yanlis(){const l=S.wrong.filter(w=>(!wf.d||w.ders==wf.d)&&(!wf.k||w.konu==wf.k));
+const g=Object.keys(DERS).map(d=>{const a=l.filter(w=>w.ders==d);if(!a.length)return'';return `<div class="card"><h3>${d}</h3>`+[...new Set(a.map(w=>w.konu))].map(k=>`<h4>${esc(k)}</h4><div class="imgs">`+a.filter(w=>w.konu==k).map(w=>`<div class="ph"><img src="${w.img||''}" data-act="zoom"><small>${esc(w.not)}</small>${del('wrong',w)}</div>`).join('')+'</div>').join('')+'</div>'}).join('');
+return `<h2>Yanlışlarım</h2><div class="card"><h3>Yanlış soru ekle</h3><div class="row">${dk('y')}<input id="yn" placeholder="Not (isteğe bağlı)"><input id="yf" type="file" accept="image/*" multiple><button class="b" data-act="addy">Fotoğrafı kaydet</button></div></div>
+<div class="card row"><b>Filtre:</b><select id="fd"><option value="">Tüm dersler</option>${dO(wf.d)}</select><select id="fk"><option value="">Tüm konular</option>${wf.d?kO(wf.d,wf.k):''}</select><button class="b" data-act="wdoc">📄 Word olarak indir</button></div>${g||none('Gösterilecek yanlış soru yok.')}`}};
+function render(){{const tp=$('#tip');if(tp)tp.style.display='none'}if(view=='msg'){NEW=new Set(unread().map(m=>m.id));markSeen()}const un=unread().length;$('#nav').innerHTML=MENU.map(m=>`<button class="${m[0]==view?'on':''}" data-act="go" data-n="${m[0]}">${m[1]}${m[0]=='msg'&&un?'<span class="dot">'+un+'</span>':''}</button>`).join('');$('#app').innerHTML=V[view]();$('#xp').textContent='⭐ '+dn().length*10+' XP';setSync(sync);if(view=='soru'){document.querySelectorAll('#app .scroll').forEach(sc=>{const i=sc.querySelector('i.cur,.stk.cur');if(i)sc.scrollLeft=Math.max(0,i.getBoundingClientRect().left-sc.getBoundingClientRect().left+sc.scrollLeft-100)});fw()}}
+const rd=f=>new Promise(r=>{const o=new FileReader();o.onload=()=>r(o.result);o.readAsDataURL(f)});
+const sq=f=>new Promise(async r=>{const im=new Image();im.onload=()=>{const m=Math.min(im.width,im.height),c=document.createElement('canvas');c.width=c.height=320;c.getContext('2d').drawImage(im,(im.width-m)/2,(im.height-m)*.2,m,m,0,0,320,320);r(c.toDataURL('image/jpeg',.85))};im.src=await rd(f)});
+const comp=async f=>new Promise(async r=>{const im=new Image();im.onload=()=>{const k=Math.min(1,900/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);r(c.toDataURL('image/jpeg',.7))};im.src=await rd(f)});
+document.addEventListener('change',async e=>{const t=e.target,m=t.id&&t.id.match(/^(hw|w|y)d$/);
+if(t.id=='hwt'){const d=$('#hwd'),c=d.value;d.innerHTML=(t.value=='okul'?ALL():Object.keys(DERS)).map(x=>`<option ${x==c?'selected':''}>${x}</option>`).join('');$('#hwk').innerHTML=kO(d.value);return}
+if(m){$('#'+m[1]+'k').innerHTML=kO(t.value);return}
+if(t.dataset.addpics){const[k,id]=t.dataset.addpics.split(':'),e=S[k].find(o=>o.id==id);for(const f of t.files){const d=await compn(f),pid=S.id++;IMG[pid]=d;await idb('w','img'+pid,d);e.pics.push({id:pid,up:0})}SL[e.id]=e.pics.length-1;save();render();return}if(t.id=='who'){WHO=t.value;idb('w','who',WHO);render();return}if(t.id=='avf'){const fl=t.files[0];if(!fl)return;S.avatar=await sq(fl);save();render();toast('Fotoğrafın eklendi 📸');return}if(t.id=='qm'){qmon=t.value;render();return}if(t.id=='et'){examT=t.value;render();return}if(t.id=='fd'){wf={d:t.value,k:''};render();return}if(t.id=='fk'){wf.k=t.value;render();return}
+if(t.dataset.t){const L=lvl()[0],x=S[t.dataset.t].find(o=>o.id==t.dataset.id);x.done=t.checked;x.dd=t.checked?today():null;save();render();if(t.checked)toast(lvl()[0]>L?'🎊 Seviye atladın!':'+10 XP kazandın! 🎉')}});
+function place(t,id,ds,h){const x=S[t].find(o=>o.id==id);x.pl=x.pl||{};if(h=='x')delete x.pl[ds];else x.pl[ds]=+h;save();render()}
+document.addEventListener('mouseover',e=>{const c=e.target.closest&&e.target.closest('[data-tip]'),t=$('#tip');if(!c){t.style.display='none';return}t.textContent=c.dataset.tip;t.style.borderLeft='4px solid '+c.dataset.c;t.style.display='block'});
+document.addEventListener('mousemove',e=>{const t=$('#tip');if(t.style.display=='block'){t.style.left=Math.max(4,Math.min(e.clientX+14,innerWidth-t.offsetWidth-8))+'px';t.style.top=Math.max(4,e.clientY-t.offsetHeight-12)+'px'}});
+document.addEventListener('dragstart',e=>{const c=e.target.closest&&e.target.closest('[data-dt]');if(c)e.dataTransfer.setData('text/plain',[c.dataset.dt,c.dataset.id,c.dataset.ds].join('|'))});
+document.addEventListener('dragover',e=>{if(e.target.closest&&e.target.closest('.slot'))e.preventDefault()});
+document.addEventListener('drop',e=>{const sl=e.target.closest&&e.target.closest('.slot');if(!sl)return;e.preventDefault();const[t,id,ds]=e.dataTransfer.getData('text/plain').split('|');if(!t)return;if(sl.dataset.ds!=ds){alert('Ödev ya da çalışma yalnızca kendi gününe yerleştirilebilir.');return}place(t,id,ds,sl.dataset.h)});
+document.addEventListener('click',async e=>{const b=e.target.closest('[data-act]');if(!b)return;const a=b.dataset.act,n=b.dataset.n;
+if(a=='plc'){const r=prompt('Saat kaç? (8-23 arası, 00:00 için 24; kaldırmak için boş bırak)');if(r===null)return;place(b.dataset.t,b.dataset.id,n,r.trim()===''?'x':Math.min(24,Math.max(8,+r||8)));return}else if(a=='wdoc'){await wdoc();return}
+else if(a=='avp'){$('#avf').click();return}else if(a=='avx'){S.avatar='';save()}
+else if(a=='addmsg'){const tx=v('mt').trim();if(!tx)return;const mid=S.id++;if(v('mf')!=WHO)HOLD.add(mid);S.msgs.push({id:mid,from:v('mf'),text:tx,ts:new Date().toISOString()});save()}
+else if(a=='addsd'){if(!v('xd')){alert('Sınav tarihini seç.');return}S.sd.push({id:S.id++,date:v('xd'),time:v('xh'),ders:v('xk'),tur:v('xt'),not:v('xn').trim()});save()}
+else if(a=='addn'){const p=+v('np');if(!v('np')||p<0||p>100){alert('Puanı 0-100 arasında gir.');return}S.notes.push({id:S.id++,date:v('nd'),ders:v('nk'),tur:v('nt'),puan:p});save()}
+else if(a=='addq'){const k=+v('qn');if(!(k>0))return;S.qs.push({id:S.id++,date:v('qd'),ders:v('qk'),n:k});save()}
+else if(a=='savegoal'){S.goal=+v('gl')||300;save()}
+else if(a=='savep'){S.name=v('pn').trim()||'Deniz';S.lgs=v('pl');save()}
+else if(a=='addex'){const r={};exSet(examT).forEach((k,i)=>r[k]={q:+v('q'+i)||0,d:+v('d'+i)||0,y:+v('y'+i)||0});for(const k in r)if(r[k].d+r[k].y>r[k].q){alert(k+': doğru + yanlış, soru sayısını aşıyor.');return}let pu;if(examT=='genel'){pu=parseFloat(v('ep'));if(!(pu>=100&&pu<=500)){alert('Genel deneme için puanı 100-500 arasında gir.');return}}S.exams.push({id:S.id++,date:v('ed'),tur:examT,name:v('en').trim(),r,puan:pu});save()}
+else if(a=='go'){view=n;fwDone=false;HOLD=new Set();if(n=='takvim'){cal='hafta';ws=mondayOf(new Date())}}else if(a=='cal'){cal=n}else if(a=='wn'){ws=new Date(ws.getFullYear(),ws.getMonth(),ws.getDate()+7*n)}else if(a=='wk'){cal='hafta';ws=mondayOf(new Date(n+'T00:00'))}else if(a=='ghsave'){GH={o:v('gho').trim(),r:v('ghr').trim(),b:v('ghb').trim()||'main',t:v('ght').trim()};await idb('w','gh',GH);await pull()}else if(a=='push'){await push();return}
+else if(a=='tgd'){const h=HID[b.dataset.t]||(HID[b.dataset.t]=new Set());h.has(n)?h.delete(n):h.add(n)}
+else if(a=='sl'){const e=S[b.dataset.t].find(o=>o.id==b.dataset.id),L=e.pics.length;SL[e.id]=((SL[e.id]||0)+ +n+L)%L}
+else if(a=='selk'){SEL[b.dataset.t]=+b.dataset.id;SL[+b.dataset.id]=0;if(b.dataset.t=='info'){const q=S.qset.find(x=>x.ref==b.dataset.id);if(q){SEL.qset=q.id;SL[q.id]=0}}scrollTo(0,0)}
+else if(a=='addbil'){await addMod('info')}else if(a=='addqs'){await addMod('qset')}
+else if(a=='delpic'){const e=S[b.dataset.t].find(o=>o.id==b.dataset.id),i=Math.min(SL[e.id]||0,e.pics.length-1);if(!e.pics.length||!confirm('Bu resim silinsin mi?'))return;const[p]=e.pics.splice(i,1);delete IMG[p.id];idb('w','img'+p.id,null);SL[e.id]=Math.max(0,i-1);save()}
+else if(a=='renk'){const e=S[b.dataset.t].find(o=>o.id==b.dataset.id),t=prompt('Yeni başlık',e.title);if(!t||!t.trim())return;e.title=t.trim();save()}else if(a=='ghoff'){GH=null;await idb('w','gh',null);setSync('')}else if(a=='mo'){mon=new Date(mon.getFullYear(),mon.getMonth()+ +n,1)}else if(a=='flt'){flt=n}
+else if(a=='zoom'){$('#lb img').src=b.src;$('#lb').style.display='flex';return}
+else if(a=='del'){if(!confirm('Silinsin mi?'))return;const t=b.dataset.t;S[t]=S[t].filter(o=>o.id!=b.dataset.id);save()}
+else if(a=='addsc'){if(!v('scd').trim())return;S.sched.push({id:S.id++,day:+v('scg'),time:v('sct'),ders:v('scd').trim(),type:v('scy')});save()}
+else if(a=='addhw'){if(!v('hwdue')){alert('Son tarihi seç.');return}S.hw.push({id:S.id++,type:v('hwt'),ders:v('hwd'),konu:v('hwk'),desc:v('hwx'),due:v('hwdue'),cr:v('hwdue')<today()?v('hwdue'):today(),done:false,dd:null});save()}
+else if(a=='addw'){if(!v('wdt'))return;S.work.push({id:S.id++,date:v('wdt'),ders:v('wd'),konu:v('wk'),q:+v('wq')||0,min:+v('wm')||0,done:false,dd:null});save()}
+else if(a=='addy'){const fs=[...$('#yf').files];if(!fs.length){alert('Önce fotoğraf seç.');return}for(const f of fs)S.wrong.push({id:S.id++,ders:v('yd'),konu:v('yk'),not:v('yn'),img:await comp(f)});save()}
+render()});
+$('#lb').onclick=()=>$('#lb').style.display='none';
+load().then(render);
+</script></body></html>
