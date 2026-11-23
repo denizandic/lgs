@@ -155,7 +155,7 @@ async function load(){try{DB=await new Promise((r,j)=>{const q=indexedDB.open('d
 const st=await idb('r','state');if(st){S=Object.assign(S,st);migrate()}GH=(await idb('r','gh'))||null;WHO=(await idb('r','who'))||'Deniz';AI.cfg=(await idb('r','aicfg'))||AI.cfg;AI.q=((await idb('r','aiq'))||[]).map(x=>x.st=='çözülüyor'?{...x,st:'bekliyor'}:x);ENGP=(await idb('r','engp'))||{}}catch(e){}
 if(GH)await pull()}
 let tm;function save(){idb('w','state',S);if(GH){clearTimeout(tm);setSync('💾 Yerel kaydedildi — GitHub arka planda');tm=setTimeout(push,700)}}
-const api=async(p,o={})=>{const c=new AbortController(),t=setTimeout(()=>c.abort(),o.to||(o.method?20000:7000));try{return await fetch(`https://api.github.com/repos/${GH.o}/${GH.r}/contents/${p}`+(o.method?'':'?ref='+GH.b),{...o,cache:'no-store',signal:c.signal,headers:{Authorization:'Bearer '+GH.t,Accept:'application/vnd.github+json','Content-Type':'application/json'}})}finally{clearTimeout(t)}};
+const api=async(p,o={})=>{const c=new AbortController(),t=setTimeout(()=>c.abort(),o.to||(o.method?20000:7000));try{return await fetch(`https://api.github.com/repos/${GH.o}/${GH.r}/contents/${p}`+(o.method?'':'?ref='+GH.b),{...o,cache:'no-store',signal:c.signal,headers:{Authorization:'Bearer '+GH.t,Accept:o.raw?'application/vnd.github.raw+json':'application/vnd.github+json','Content-Type':'application/json'}})}finally{clearTimeout(t)}};
 const b64=x=>btoa(unescape(encodeURIComponent(x))),unb=x=>decodeURIComponent(escape(atob(x.replace(/\n/g,''))));
 let pushBusy=false,pushAgain=false;const VFAIL=new Set(),MAXV=25*1024*1024,MAXLOC=300*1024*1024,blobB64=b=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result).split(',')[1]);r.onerror=()=>rej(new Error('Dosya okunamadı'));r.readAsDataURL(b)});
 
@@ -214,9 +214,9 @@ async function push(){
 async function pull(){
   try{
     setSync('⏳ GitHub okunuyor');
-    const g=await api('data.json');
+    const g=await api('data.json',{raw:1,to:30000});
     if(g.ok){
-      const D=JSON.parse(unb((await g.json()).content)),old=Object.fromEntries(S.wrong.map(w=>[w.id,w.img]));
+      const D=JSON.parse(await g.text()),old=Object.fromEntries(S.wrong.map(w=>[w.id,w.img]));
       (D.wrong=D.wrong||[]).forEach(w=>w.img=old[w.id]||null);
       S=Object.assign(DEF(),D);migrate();
       for(const w of S.wrong)if(!w.img){
@@ -230,7 +230,7 @@ async function pull(){
     }else throw new Error('GET data.json HTTP '+g.status);
   }catch(e){
     console.error('GitHub okuma hatası:',e);
-    setSync('⚠️ GitHub okunamadı — yerel veriler korunuyor');
+    setSync('⚠️ GitHub okunamadı ('+(e.message||e)+') — yerel veriler korunuyor');
   }
 }
 const dn=()=>[...S.hw,...S.work].filter(x=>x.done&&x.dd);
