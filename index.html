@@ -155,7 +155,7 @@ async function load(){try{DB=await new Promise((r,j)=>{const q=indexedDB.open('d
 const st=await idb('r','state');if(st){S=Object.assign(S,st);migrate()}GH=(await idb('r','gh'))||null;WHO=(await idb('r','who'))||'Deniz';AI.cfg=(await idb('r','aicfg'))||AI.cfg;AI.q=((await idb('r','aiq'))||[]).map(x=>x.st=='çözülüyor'?{...x,st:'bekliyor'}:x);ENGP=(await idb('r','engp'))||{}}catch(e){}
 if(GH)await pull()}
 let tm;function save(){idb('w','state',S);if(GH){clearTimeout(tm);setSync('💾 Yerel kaydedildi — GitHub arka planda');tm=setTimeout(push,700)}}
-const api=async(p,o={})=>{const c=new AbortController(),t=setTimeout(()=>c.abort(),o.to||(o.method?20000:7000));try{return await fetch(`https://api.github.com/repos/${GH.o}/${GH.r}/contents/${p}`+(o.method?'':'?ref='+GH.b),{...o,cache:'no-store',signal:c.signal,headers:{Authorization:'Bearer '+GH.t,Accept:o.raw?'application/vnd.github.raw+json':'application/vnd.github+json','Content-Type':'application/json'}})}finally{clearTimeout(t)}};
+const api=async(p,o={})=>{const c=new AbortController(),t=setTimeout(()=>c.abort(),o.to||(o.method?20000:7000));try{return await fetch(`https://api.github.com/repos/${GH.o}/${GH.r}/contents/${p}`+(o.method?'':'?ref='+GH.b),{...o,cache:'no-store',signal:c.signal,headers:{Authorization:'Bearer '+String(GH.t).replace(/[^\x21-\x7E]/g,''),Accept:o.raw?'application/vnd.github.raw+json':'application/vnd.github+json','Content-Type':'application/json'}})}finally{clearTimeout(t)}};
 const b64=x=>btoa(unescape(encodeURIComponent(x))),unb=x=>decodeURIComponent(escape(atob(x.replace(/\n/g,''))));
 let pushBusy=false,pushAgain=false;const VFAIL=new Set(),MAXV=25*1024*1024,MAXLOC=300*1024*1024,blobB64=b=>new Promise((res,rej)=>{const r=new FileReader();r.onload=()=>res(String(r.result).split(',')[1]);r.onerror=()=>rej(new Error('Dosya okunamadı'));r.readAsDataURL(b)});
 
@@ -230,7 +230,7 @@ async function pull(){
     }else throw new Error('GET data.json HTTP '+g.status);
   }catch(e){
     console.error('GitHub okuma hatası:',e);
-    setSync('⚠️ GitHub okunamadı ('+(e.message||e)+') — yerel veriler korunuyor');
+    setSync('⚠️ GitHub okunamadı ('+(e.message||e)+')'+(/fetch|Load failed|NetworkError/i.test(e.message||'')?' — internet/VPN/reklam engelleyici ya da jeton hatalı olabilir':'')+' — yerel veriler korunuyor');
   }
 }
 const dn=()=>[...S.hw,...S.work].filter(x=>x.done&&x.dd);
@@ -355,7 +355,7 @@ if(!l.length){alert('İndirilecek yanlış soru fotoğrafı yok. Önce ders ve k
 const blob=await buildDocx(l),a=document.createElement('a'),nm=['Yanlis_Sorular',wf.d,wf.k,today()].filter(Boolean).join('_').replace(/[^A-Za-z0-9ÇĞİÖŞÜçğıöşü_-]+/g,'_');
 a.href=URL.createObjectURL(blob);a.download=nm+'.docx';document.body.appendChild(a);a.click();a.remove();toast('Word dosyası hazır: '+l.length+' soru 📄')}
 const IMG={},LD=new Set(),byD=(a,b)=>a.date<b.date?1:a.date>b.date?-1:b.id-a.id;
-async function ghBlob(path,mt){const c=new AbortController(),tt=setTimeout(()=>c.abort(),180000);try{const r=await fetch(`https://api.github.com/repos/${GH.o}/${GH.r}/contents/${path}?ref=${GH.b}`,{cache:'no-store',signal:c.signal,headers:{Authorization:'Bearer '+GH.t,Accept:'application/vnd.github.raw+json'}});if(!r.ok)return null;return new Blob([await r.arrayBuffer()],{type:mt||'video/mp4'})}finally{clearTimeout(tt)}}
+async function ghBlob(path,mt){const c=new AbortController(),tt=setTimeout(()=>c.abort(),180000);try{const r=await fetch(`https://api.github.com/repos/${GH.o}/${GH.r}/contents/${path}?ref=${GH.b}`,{cache:'no-store',signal:c.signal,headers:{Authorization:'Bearer '+String(GH.t).replace(/[^\x21-\x7E]/g,''),Accept:'application/vnd.github.raw+json'}});if(!r.ok)return null;return new Blob([await r.arrayBuffer()],{type:mt||'video/mp4'})}finally{clearTimeout(tt)}}
 function ensureVid(p){if(IMG[p.id]||LD.has(p.id))return;LD.add(p.id);(async()=>{let b=await idb('r','img'+p.id);if(!(b instanceof Blob)&&GH){try{b=await ghBlob('bilgi/'+p.id+'.'+(p.ext||'mp4'),p.mt);if(b)await idb('w','img'+p.id,b)}catch(e){}}
 if(b instanceof Blob){IMG[p.id]=URL.createObjectURL(b);if(view=='ana'||view=='bilgi')render()}else LD.delete(p.id)})()}
 async function addMedia(f){if(f.type.startsWith('video/')||/\.(mp4|m4v|mov|webm)$/i.test(f.name)){
